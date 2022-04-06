@@ -63,6 +63,19 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Commons\CommonData.cs" />
+    <Compile Include="Commons\IRepository.cs" />
+    <Compile Include="Commons\RepositoryCommon.cs" />
+    <Compile Include="Dto\UserDto.cs" />
+    <Compile Include="Forms\Quality\QualityForm.xaml.cs">
+      <DependentUpon>QualityForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Register\RegisterForm.xaml.cs">
+      <DependentUpon>RegisterForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Repository\UserRepository.cs" />
+    <Compile Include="Security\Encrypt.cs" />
+    <Compile Include="Security\User.cs" />
+    <Compile Include="Security\UserSingleton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Forms\Login\LoginForm.xaml.cs">
@@ -94,11 +107,17 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repository\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Page Include="Forms\Login\LoginForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Quality\QualityForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Register\RegisterForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

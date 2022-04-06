@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Quality_Control.Forms.Quality;
+using Quality_Control.Forms.Register;
+using Quality_Control.Repository;
+using Quality_Control.Security;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -36,22 +40,22 @@ namespace Quality_Control.Forms.Login
             else if (user.IsActive)
             {
                 _ = UserSingleton.CreateInstance(user.Id, user.Name, user.Surname, user.Email, user.Login, user.Permission, user.Identifier, user.IsActive);
-                LabBookForm quality = new LabBookForm();
+                QualityForm quality = new QualityForm();
                 quality.Show();
-                this.Close();
+                Close();
             }
             else
             {
-                MessageBox.Show("Użytkownik: '" + user.Login + "' jest jeszcze nieaktywny. Skontaktuj się z administratorem.",
+                _ = MessageBox.Show("Użytkownik: '" + user.Login + "' jest jeszcze nieaktywny. Skontaktuj się z administratorem.",
                     "Brak uprawnień", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
         private void BtnRegister_Click(object sender, RoutedEventArgs e)
         {
-            //RegisterForm registerForm = new RegisterForm();
-            //registerForm.Show();
-            //Close();
+            RegisterForm registerForm = new RegisterForm();
+            registerForm.Show();
+            Close();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
