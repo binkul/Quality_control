@@ -4,9 +4,27 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Quality_Control.Forms.Quality"
+        xmlns:vm ="clr-namespace:Quality_Control.Forms.Quality.ModelView"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:cmd="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
-        Title="QualityForm" Height="450" Width="800">
-    <Grid>
+        ResizeMode="CanResize"
+        Title="Kontrola jakości" 
+        Height="{Binding FormHeight, Mode=TwoWay}" 
+        Width="{Binding FormWidth, Mode=TwoWay}"
+        Top="{Binding FormYpos, Mode=TwoWay}"
+        Left="{Binding FormXpos, Mode=TwoWay}" 
+        Icon="/Quality Control;component/Img/Ok-icon.png">
+    <Window.DataContext>
+        <vm:QualityFormMV />
+    </Window.DataContext>
+    <i:Interaction.Triggers>
+        <!-- Closing Form event -->
+        <i:EventTrigger EventName="Closing">
+            <cmd:EventToCommand Command="{Binding OnClosingCommand}" PassEventArgsToCommand="True" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <DockPanel>
         
-    </Grid>
+    </DockPanel>
 </Window>

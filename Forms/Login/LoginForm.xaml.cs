@@ -24,6 +24,10 @@ namespace Quality_Control.Forms.Login
 
             _logins = GetLogins();
             CmbUserName.ItemsSource = _logins;
+            if (_logins.Count > 0)
+            {
+                CmbUserName.Text = _logins[0];
+            }
         }
 
         private void BtnSubbmit_Click(object sender, RoutedEventArgs e)
