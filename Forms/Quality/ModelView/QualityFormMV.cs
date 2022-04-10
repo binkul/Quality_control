@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
+using Quality_Control.Commons;
 using Quality_Control.Forms.Quality.Model;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace Quality_Control.Forms.Quality.ModelView
     {
         private readonly WindowData _windowData = WindowSettings.Read();
 
+        public SortableObservableCollection<Component> Quality { get; } = new SortableObservableCollection<Component>();
         public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
 
 

@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Controls.Ribbon" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -76,6 +77,7 @@
     </Compile>
     <Compile Include="Commons\IRepository.cs" />
     <Compile Include="Commons\RepositoryCommon.cs" />
+    <Compile Include="Commons\SortableObservableCollection.cs" />
     <Compile Include="Dto\UserDto.cs" />
     <Compile Include="Forms\Quality\ModelView\QualityFormMV.cs" />
     <Compile Include="Forms\Quality\Model\WindowData.cs" />
@@ -141,6 +143,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Img\Ok-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\New.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\Trash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\Statistic.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
