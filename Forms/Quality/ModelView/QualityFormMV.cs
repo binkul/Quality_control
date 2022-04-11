@@ -1,21 +1,28 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using Quality_Control.Commons;
+using Quality_Control.Forms.Quality.Command;
 using Quality_Control.Forms.Quality.Model;
 using Quality_Control.Service;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Quality_Control.Forms.Quality.ModelView
 {
     class QualityFormMV : INotifyPropertyChanged
     {
+        private ICommand _saveButton;
+
         private readonly double _startLeftPosition = 32;
         private readonly WindowData _windowData = WindowSettings.Read();
         private readonly QualityService _service = new QualityService();
         private int _selectedIndex;
 
+        public bool Modified { get; private set; } = false;
         public SortableObservableCollection<QualityModel> Quality { get; }
+        public ObservableCollection<QualityModel> tmp = new ObservableCollection<QualityModel>();
         public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
 
 
@@ -24,6 +31,12 @@ namespace Quality_Control.Forms.Quality.ModelView
         {
             Quality = _service.GetAllQuality(DateTime.Today.Year);
             OnClosingCommand = new RelayCommand<CancelEventArgs>(this.OnClosingCommandExecuted);
+            Quality.CollectionChanged += Quality_CollectionChanged;
+        }
+
+        private void Quality_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Modified = true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -115,5 +128,18 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
+        public ICommand SaveButton
+        {
+            get
+            {
+                if (_saveButton == null) _saveButton = new SaveButton(this);
+                return _saveButton;
+            }
+        }
+
+        public void SaveAll()
+        {
+
+        }
     }
 }

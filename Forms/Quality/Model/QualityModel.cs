@@ -1,8 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Quality_Control.Forms.Quality.Model
 {
-    public class QualityModel : IComparable<QualityModel>
+    public class QualityModel : INotifyPropertyChanged
     {
         private long _id;
         private int _number;
@@ -17,6 +18,17 @@ namespace Quality_Control.Forms.Quality.Model
         private DateTime _productionDate = DateTime.Now;
         private long _loginId = 1;
         private string _login = "";
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(params string[] names)
+        {
+            if (PropertyChanged != null)
+            {
+                foreach (string name in names)
+                    PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
 
         public QualityModel(long id, int number, string yearNumber, string productName, string productIndex, long labBookId, int productTypeId, string productTypeName,
             string remarks, string activeDataFields, DateTime productionDate, long loginId, string login)
@@ -104,7 +116,11 @@ namespace Quality_Control.Forms.Quality.Model
         public string Remarks
         {
             get => _remarks;
-            set { _remarks = value; }
+            set 
+            { 
+                _remarks = value;
+                OnPropertyChanged(Remarks);
+            }
         }
 
         public string ActiveDataFields
@@ -131,13 +147,13 @@ namespace Quality_Control.Forms.Quality.Model
             set { _login = value; }
         }
 
-        public int CompareTo(QualityModel other)
-        {
-            if (other == null)
-                return 1;
+        //public int CompareTo(QualityModel other)
+        //{
+        //    if (other == null)
+        //        return 1;
 
-            return Number.CompareTo(other.Number);
-        }
+        //    return Number.CompareTo(other.Number);
+        //}
 
     }
 }

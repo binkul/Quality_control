@@ -1,12 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Quality_Control.Commons
 {
-    public class SortableObservableCollection<T> : ObservableCollection<T>
+    public class SortableObservableCollection<T> : ObservableCollection<T> where T : INotifyPropertyChanged
     {
+        public SortableObservableCollection()
+        {
+            CollectionChanged += SortableObservableCollection_CollectionChanged;
+        }
+
+        void SortableObservableCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (object item in e.NewItems)
+                {
+                    (item as INotifyPropertyChanged).PropertyChanged += Item_PropertyChanged;
+                }
+            }
+            if (e.OldItems != null)
+            {
+                foreach (object item in e.OldItems)
+                {
+                    (item as INotifyPropertyChanged).PropertyChanged -= Item_PropertyChanged;
+                }
+            }
+        }
+
+        void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var a = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+            OnCollectionChanged(a);
+        }
+
         public void Sort<TKey>(Func<T, TKey> keySelector, System.ComponentModel.ListSortDirection direction)
         {
             switch (direction)

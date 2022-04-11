@@ -62,7 +62,8 @@
                             </ToolTip>
                         </RibbonButton.ToolTip>
                     </RibbonButton>
-                    <RibbonButton Label="Zapisz" LargeImageSource="/Img/Save.png" FontWeight="Regular">
+                    <RibbonButton Label="Zapisz" LargeImageSource="/Img/Save.png" FontWeight="Regular"
+                                  Command="{Binding SaveButton}">
                         <RibbonButton.ToolTip >
                             <ToolTip Background="Yellow">
                                 <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
@@ -209,7 +210,8 @@
             <!-- Remarks -->
             <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2" >
                 <Label Content="Uwagi" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,5,0,0" Foreground="Blue" FontSize="14" />
-                <TextBox Margin="2,2,5,2" Height="50" AcceptsReturn="True" />
+                <TextBox Margin="2,2,5,2" Height="50" AcceptsReturn="True" 
+                         Text="{Binding SelectedItem.Remarks, ElementName=DgQuality, Mode=TwoWay}"/>
             </StackPanel>
             
         </Grid>

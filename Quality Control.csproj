@@ -79,6 +79,7 @@
     <Compile Include="Commons\RepositoryCommon.cs" />
     <Compile Include="Commons\SortableObservableCollection.cs" />
     <Compile Include="Dto\UserDto.cs" />
+    <Compile Include="Forms\Quality\Command\SaveButton.cs" />
     <Compile Include="Forms\Quality\ModelView\QualityFormMV.cs" />
     <Compile Include="Forms\Quality\Model\QualityModel.cs" />
     <Compile Include="Forms\Quality\Model\WindowData.cs" />
