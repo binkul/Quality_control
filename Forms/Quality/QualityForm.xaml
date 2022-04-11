@@ -18,6 +18,30 @@
     <Window.DataContext>
         <vm:QualityFormMV />
     </Window.DataContext>
+    <Window.Resources>
+        <Style x:Key="AllignColmnHeaderCenter" TargetType="DataGridColumnHeader">
+            <Setter Property="SeparatorBrush" Value="WhiteSmoke" />
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Height" Value="25" />
+        </Style>
+        <Style x:Key="AllignCellCenter" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0,0,0,0" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+        <Style x:Key="AllignCellLeft" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="3,0,0,0" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+        <SolidColorBrush x:Key="DataGridBorderColor" Color="#FFB1AEAE"/>
+    </Window.Resources>
     <i:Interaction.Triggers>
         <!-- Closing Form event -->
         <i:EventTrigger EventName="Closing">
@@ -86,34 +110,108 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="10" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="40" />
-                <RowDefinition Height="40" />
+                <RowDefinition Height="80" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             
-            <!--#### Filtering ####-->
-            <Canvas Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" x:Name="CanvasFilterData" HorizontalAlignment="Left" Margin="0,0,0,-0.4">
-
-            </Canvas>
-
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
+                <TextBox x:Name="TxtFilterNumber" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="{Binding TxtNumberLeftPosition}" 
+                         Width="{Binding ElementName=ColYearNumber, Path=ActualWidth}"/>
+                <TextBox x:Name="TxtFilterNname" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,0" 
+                         Width="{Binding ElementName=ColProductName, Path=ActualWidth}"/>
+            </StackPanel>
+            
             <!--#### Main DataGrid -->
-            <DataGrid Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="2,2,2,2">
+            <DataGrid x:Name="DgQuality" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="2,2,2,2" AutoGenerateColumns="False" 
+                      ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow" IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
+                      CanUserAddRows="False"  CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column"
+                      HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
+                      VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
+                      ItemsSource="{Binding Quality}"
+                      SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
                 
+                <DataGrid.Columns>
+                    
+                    <DataGridTextColumn x:Name="ColNumber" Binding="{Binding Id}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColId" Binding="{Binding Number}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColProductIndex" Binding="{Binding ProductIndex}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColLabbokId" Binding="{Binding LabBookId}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="Colrekarks" Binding="{Binding Remarks}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColActiveFields" Binding="{Binding ActiveDataFields}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColProdDate" Binding="{Binding ProductionDate}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColLoginId" Binding="{Binding LoginId}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColLogin" Binding="{Binding Login}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColTypeId" Binding="{Binding ProductTypeId}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColTypeName" Binding="{Binding ProductTypeName}" Visibility="Collapsed" />
+
+                    <!-- Arrow selector -->
+                    <DataGridTemplateColumn x:Name="ColStatus" HeaderStyle="{StaticResource AllignColmnHeaderCenter}" 
+                                                        IsReadOnly="True" CanUserSort="False" CanUserResize="False"
+                                                        Width="30">
+                        <DataGridTemplateColumn.CellTemplate >
+                            <DataTemplate>
+                                <StackPanel Background="#FFE5E5E5" Margin="-1,-1,-1,-1">
+                                    <Image x:Name="ArrowRight" Width="18" Height="16" Margin="1,1,1,1" Source="/Img/arrow-right.png" 
+                                                   Visibility="Hidden">
+                                    </Image>
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True" >
+                                        <Setter TargetName="ArrowRight" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Column Number/year -->
+                    <DataGridTextColumn x:Name="ColYearNumber" Header="Nr" IsReadOnly="True" Width="30*"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}"
+                                        Binding="{Binding YearNumber}">
+                    </DataGridTextColumn>
+                    
+                    <!-- column product name -->
+                    <DataGridTextColumn x:Name="ColProductName" Header="Nazwa" IsReadOnly="True" Width="70*"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellLeft}"
+                                        Binding="{Binding ProductName}">
+                    </DataGridTextColumn>
+                    
+                </DataGrid.Columns>
             </DataGrid>
 
+            <!--#### Year chose -->
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3" >
+                <Label Content="Wybierz rok produkcji" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Blue" />
+                <ComboBox x:Name="CmbYear" FontSize="12" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="60,0,0,0" />
+            </StackPanel>
+            
+            <!-- #### Date label and name -->
+            <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="0" >
+                <Label x:Name="LblDate" Content="08-08-2022" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
+                       Margin="2,0,0,0" Padding="4,5,5,1" />
+                <Label x:Name="LblProduct" Content="Nazwa wyrobu" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
+                       Padding="10,5,5,1" Foreground="Red" />
+            </StackPanel>
+            
             <!--#### Measure DataGrid -->
-            <DataGrid Grid.Column="1" Grid.Row="1" Margin="2,2,2,2">
+            <DataGrid Grid.Column="2" Grid.Row="1" Margin="2,2,5,2">
 
             </DataGrid>
 
             <!-- Remarks -->
-            <TextBox Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" Margin="2,2,2,2">
-                
-            </TextBox>
+            <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2" >
+                <Label Content="Uwagi" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,5,0,0" Foreground="Blue" FontSize="14" />
+                <TextBox Margin="2,2,5,2" Height="50" AcceptsReturn="True" />
+            </StackPanel>
+            
         </Grid>
         
     </DockPanel>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Quality_Control.Forms.Login"
         mc:Ignorable="d"
         Title="Logowanie" Height="400" Width="400" WindowStartupLocation="CenterScreen" FontSize="14" 
-        Background="#FF04c582" BorderBrush="#FFC3EE2B" ResizeMode="NoResize" KeyDown="Window_KeyDown">
+        Background="#FF04c582" BorderBrush="#FFC3EE2B" ResizeMode="NoResize" KeyDown="Window_KeyDown" Icon="Ok-icon.png">
     <Border Background="#FF2e3137" CornerRadius="20" Margin="20">
         <StackPanel Margin="20">
             

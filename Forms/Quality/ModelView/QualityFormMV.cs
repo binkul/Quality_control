@@ -1,28 +1,28 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using Quality_Control.Commons;
 using Quality_Control.Forms.Quality.Model;
+using Quality_Control.Service;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Quality_Control.Forms.Quality.ModelView
 {
     class QualityFormMV : INotifyPropertyChanged
     {
+        private readonly double _startLeftPosition = 32;
         private readonly WindowData _windowData = WindowSettings.Read();
+        private readonly QualityService _service = new QualityService();
+        private int _selectedIndex;
 
-        public SortableObservableCollection<Component> Quality { get; } = new SortableObservableCollection<Component>();
+        public SortableObservableCollection<QualityModel> Quality { get; }
         public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
 
 
 
         public QualityFormMV()
         {
-
+            Quality = _service.GetAllQuality(DateTime.Today.Year);
             OnClosingCommand = new RelayCommand<CancelEventArgs>(this.OnClosingCommandExecuted);
         }
 
@@ -98,6 +98,20 @@ namespace Quality_Control.Forms.Quality.ModelView
             {
                 _windowData.FormHeight = value;
                 OnPropertyChanged(nameof(FormHeight));
+            }
+        }
+
+        public Thickness TxtNumberLeftPosition => new Thickness(_startLeftPosition, 0, 0, 0);
+
+        public int SelectedIndex
+        {
+            get => _selectedIndex;
+            set
+            {
+                if (value < 0) return;
+
+                _selectedIndex = value;
+                OnPropertyChanged(nameof(SelectedIndex));
             }
         }
 
