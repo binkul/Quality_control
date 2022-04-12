@@ -10,9 +10,9 @@ namespace Quality_Control.Forms.Quality.Command
 {
     class SaveButton : ICommand
     {
-        private readonly QualityFormMV _modelView;
+        private readonly QualityMV _modelView;
 
-        public SaveButton(QualityFormMV modelView)
+        public SaveButton(QualityMV modelView)
         {
             if (modelView == null) throw new ArgumentNullException("Model widoku jest null");
             _modelView = modelView;

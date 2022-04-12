@@ -6,12 +6,14 @@ using Quality_Control.Service;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
 namespace Quality_Control.Forms.Quality.ModelView
 {
-    class QualityFormMV : INotifyPropertyChanged
+    class QualityMV : INotifyPropertyChanged
     {
         private ICommand _saveButton;
 
@@ -19,24 +21,16 @@ namespace Quality_Control.Forms.Quality.ModelView
         private readonly WindowData _windowData = WindowSettings.Read();
         private readonly QualityService _service = new QualityService();
         private int _selectedIndex;
+        private string _remarks;
+        private DateTime _productionDate;       
 
-        public bool Modified { get; private set; } = false;
         public SortableObservableCollection<QualityModel> Quality { get; }
-        public ObservableCollection<QualityModel> tmp = new ObservableCollection<QualityModel>();
         public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
 
-
-
-        public QualityFormMV()
+        public QualityMV()
         {
             Quality = _service.GetAllQuality(DateTime.Today.Year);
             OnClosingCommand = new RelayCommand<CancelEventArgs>(this.OnClosingCommandExecuted);
-            Quality.CollectionChanged += Quality_CollectionChanged;
-        }
-
-        private void Quality_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            Modified = true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -74,6 +68,15 @@ namespace Quality_Control.Forms.Quality.ModelView
             //}
         }
 
+        protected QualityService Service => _service;
+
+        //public DataView QualityData => _service.DataQualityView; 
+
+        public bool Modified 
+        {
+           get => Quality.Any(x => x.Modified == true); 
+        }
+       
         public double FormXpos
         {
             get => _windowData.FormXpos;
@@ -121,10 +124,37 @@ namespace Quality_Control.Forms.Quality.ModelView
             get => _selectedIndex;
             set
             {
-                if (value < 0) return;
+                if (value < 0 || Quality.Count == 0 || value >= Quality.Count) return;
 
                 _selectedIndex = value;
+                _remarks = Quality[_selectedIndex].Remarks;
+                _productionDate = Quality[_selectedIndex].ProductionDate;
+                _service.RefreshQualityData(Quality[_selectedIndex].Id);
                 OnPropertyChanged(nameof(SelectedIndex));
+                OnPropertyChanged(nameof(Remarks));
+                OnPropertyChanged(nameof(ProductionDate));
+            }
+        }
+
+        public string Remarks
+        {
+            get => _remarks;
+            set
+            {
+                _remarks = value;
+                Quality[_selectedIndex].Remarks = _remarks;
+                Quality[_selectedIndex].Modified = true;
+            }
+        }
+
+        public DateTime ProductionDate
+        {
+            get => _productionDate;
+            set
+            {
+                _productionDate = value;
+                Quality[_selectedIndex].ProductionDate = _productionDate;
+                Quality[_selectedIndex].Modified = true;
             }
         }
 
@@ -139,7 +169,7 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public void SaveAll()
         {
-
+          
         }
     }
 }

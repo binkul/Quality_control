@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Quality_Control.Forms.Quality"
+        xmlns:Convertors="clr-namespace:Quality_Control.Converters"
         xmlns:vm ="clr-namespace:Quality_Control.Forms.Quality.ModelView"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:cmd="http://www.galasoft.ch/mvvmlight"
@@ -16,9 +17,11 @@
         Left="{Binding FormXpos, Mode=TwoWay}" 
         Icon="/Quality Control;component/Img/Ok-icon.png">
     <Window.DataContext>
-        <vm:QualityFormMV />
+        <vm:QualityMV />
     </Window.DataContext>
     <Window.Resources>
+        <vm:QualityDataMV x:Key="QualityData" />
+        <Convertors:DateTimeConverter x:Key="DateTimeConverter" />
         <Style x:Key="AllignColmnHeaderCenter" TargetType="DataGridColumnHeader">
             <Setter Property="SeparatorBrush" Value="WhiteSmoke" />
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -135,7 +138,7 @@
                       HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       ItemsSource="{Binding Quality}"
-                      SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
+                      SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, FallbackValue=0}">
                 
                 <DataGrid.Columns>
                     
@@ -143,7 +146,7 @@
                     <DataGridTextColumn x:Name="ColId" Binding="{Binding Number}" Visibility="Collapsed" />
                     <DataGridTextColumn x:Name="ColProductIndex" Binding="{Binding ProductIndex}" Visibility="Collapsed" />
                     <DataGridTextColumn x:Name="ColLabbokId" Binding="{Binding LabBookId}" Visibility="Collapsed" />
-                    <DataGridTextColumn x:Name="Colrekarks" Binding="{Binding Remarks}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColRemarks" Binding="{Binding Remarks}" Visibility="Collapsed" />
                     <DataGridTextColumn x:Name="ColActiveFields" Binding="{Binding ActiveDataFields}" Visibility="Collapsed" />
                     <DataGridTextColumn x:Name="ColProdDate" Binding="{Binding ProductionDate}" Visibility="Collapsed" />
                     <DataGridTextColumn x:Name="ColLoginId" Binding="{Binding LoginId}" Visibility="Collapsed" />
@@ -172,14 +175,14 @@
                     </DataGridTemplateColumn>
 
                     <!-- Column Number/year -->
-                    <DataGridTextColumn x:Name="ColYearNumber" Header="Nr" IsReadOnly="True" Width="30*"
+                    <DataGridTextColumn x:Name="ColYearNumber" Header="Nr" IsReadOnly="True" Width="30*" CanUserSort="False"
                                         HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
                                         ElementStyle="{StaticResource AllignCellCenter}"
                                         Binding="{Binding YearNumber}">
                     </DataGridTextColumn>
                     
                     <!-- column product name -->
-                    <DataGridTextColumn x:Name="ColProductName" Header="Nazwa" IsReadOnly="True" Width="70*"
+                    <DataGridTextColumn x:Name="ColProductName" Header="Nazwa" IsReadOnly="True" Width="70*" CanUserSort="False"
                                         HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
                                         ElementStyle="{StaticResource AllignCellLeft}"
                                         Binding="{Binding ProductName}">
@@ -188,7 +191,7 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <!--#### Year chose -->
+            <!--#### ComboBox Year -->
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3" >
                 <Label Content="Wybierz rok produkcji" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Blue" />
                 <ComboBox x:Name="CmbYear" FontSize="12" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="60,0,0,0" />
@@ -196,22 +199,69 @@
             
             <!-- #### Date label and name -->
             <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="0" >
-                <Label x:Name="LblDate" Content="08-08-2022" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
-                       Margin="2,0,0,0" Padding="4,5,5,1" />
-                <Label x:Name="LblProduct" Content="Nazwa wyrobu" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
-                       Padding="10,5,5,1" Foreground="Red" />
+                <DatePicker x:Name="DpPicker" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2,0,0,0"
+                            SelectedDateFormat="Short"
+                            Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                <!--<Label x:Name="LblDate" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
+                       Margin="2,0,0,0" Padding="4,5,5,1" 
+                       Content="{Binding SelectedItem.ProductionDate, ElementName=DgQuality, Converter={StaticResource DateTimeConverter}}"/>-->
+                <Label x:Name="LblProduct" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
+                       Padding="10,1,5,5" Foreground="Red" 
+                       Content="{Binding SelectedItem.ProductName, ElementName=DgQuality, Mode=OneWay}"/>
             </StackPanel>
             
             <!--#### Measure DataGrid -->
-            <DataGrid Grid.Column="2" Grid.Row="1" Margin="2,2,5,2">
+            <DataGrid x:Name="DgQualityData" Grid.Column="2" Grid.Row="1" Margin="2,2,5,2" AutoGenerateColumns="False"
+                      ColumnWidth="*" SelectionMode="Single" SelectionUnit="CellOrRowHeader"  IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
+                      CanUserAddRows="True"  CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column"
+                      ItemsSource="{Binding Source={StaticResource QualityData}, Path=QualityData, UpdateSourceTrigger=PropertyChanged}">
 
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="CoIdq" Binding="{Binding Id}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="CoQualityId" Binding="{Binding quality_id}" Visibility="Collapsed" />
+
+                    <!-- Arrow selector -->
+                    <DataGridTemplateColumn x:Name="ColStatusData" HeaderStyle="{StaticResource AllignColmnHeaderCenter}" 
+                                                        IsReadOnly="True" CanUserSort="False" CanUserResize="False"
+                                                        Width="30">
+                        <DataGridTemplateColumn.CellTemplate >
+                            <DataTemplate>
+                                <StackPanel Background="#FFE5E5E5" Margin="-1,-1,-1,-1">
+                                    <Image x:Name="ArrowRight" Width="18" Height="16" Margin="1,1,1,1" Source="/Img/arrow-right.png" 
+                                                   Visibility="Hidden">
+                                    </Image>
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True" >
+                                        <Setter TargetName="ArrowRight" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Measure date -->
+                    <DataGridTextColumn Header="Data" Width="80" CanUserSort="False"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}"
+                                        Binding="{Binding measure_date}">
+                    </DataGridTextColumn>
+                    
+                    <!-- days distance -->
+                    <DataGridTextColumn Header="Doba" Width="50" CanUserSort="False"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}"
+                                        Binding="{Binding days_distance}">
+                    </DataGridTextColumn>
+
+                </DataGrid.Columns>
             </DataGrid>
 
             <!-- Remarks -->
             <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2" >
                 <Label Content="Uwagi" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,5,0,0" Foreground="Blue" FontSize="14" />
                 <TextBox Margin="2,2,5,2" Height="50" AcceptsReturn="True" 
-                         Text="{Binding SelectedItem.Remarks, ElementName=DgQuality, Mode=TwoWay}"/>
+                         Text="{Binding Remarks, Mode=TwoWay}"/>
             </StackPanel>
             
         </Grid>

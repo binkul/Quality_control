@@ -18,17 +18,9 @@ namespace Quality_Control.Forms.Quality.Model
         private DateTime _productionDate = DateTime.Now;
         private long _loginId = 1;
         private string _login = "";
+        private bool _modified = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(params string[] names)
-        {
-            if (PropertyChanged != null)
-            {
-                foreach (string name in names)
-                    PropertyChanged(this, new PropertyChangedEventArgs(name));
-            }
-        }
 
         public QualityModel(long id, int number, string yearNumber, string productName, string productIndex, long labBookId, int productTypeId, string productTypeName,
             string remarks, string activeDataFields, DateTime productionDate, long loginId, string login)
@@ -68,92 +60,85 @@ namespace Quality_Control.Forms.Quality.Model
         public long Id
         {
             get => _id;
-            set { _id = value; }
+            set => _id = value;
         }
 
         public int Number
         {
             get => _number;
-            set { _number = value; }
+            set => _number = value;
         }
 
         public string YearNumber
         {
             get => _yearNumber;
-            set { _yearNumber = value; }
+            set => _yearNumber = value;
         }
 
         public string ProductName
         {
             get => _productName;
-            set { _productName = value; }
+            set => _productName = value;
         }
 
         public string ProductIndex
         {
             get => _productIndex;
-            set { _productIndex = value; }
+            set => _productIndex = value;
         }
 
         public long LabBookId
         {
             get => _labBookId;
-            set { _labBookId = value; }
+            set => _labBookId = value;
         }
 
         public int ProductTypeId
         {
             get => _productTypeId;
-            set { _productTypeId = value; }
+            set => _productTypeId = value;
         }
 
         public string ProductTypeName
         {
             get => _productTypeName;
-            set { _productTypeName = value; }
+            set => _productTypeName = value;
         }
 
         public string Remarks
         {
             get => _remarks;
-            set 
-            { 
-                _remarks = value;
-                OnPropertyChanged(Remarks);
-            }
+            set => _remarks = value;
         }
 
         public string ActiveDataFields
         {
             get => _activeDataFields;
-            set { _activeDataFields = value; }
+            set => _activeDataFields = value;
         }
 
         public DateTime ProductionDate
         {
             get => _productionDate;
-            set { _productionDate = value; }
+            set => _productionDate = value;
         }
 
         public long LoginId
         {
             get => _loginId;
-            set { _loginId = value; }
+            set => _loginId = value;
         }
 
         public string Login
         {
             get => _login;
-            set { _login = value; }
+            set => _login = value;
         }
 
-        //public int CompareTo(QualityModel other)
-        //{
-        //    if (other == null)
-        //        return 1;
-
-        //    return Number.CompareTo(other.Number);
-        //}
-
+        public bool Modified
+        {
+            get => _modified;
+            set => _modified = value;
+        }
     }
 }

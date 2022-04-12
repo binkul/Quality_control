@@ -78,9 +78,12 @@
     <Compile Include="Commons\IRepository.cs" />
     <Compile Include="Commons\RepositoryCommon.cs" />
     <Compile Include="Commons\SortableObservableCollection.cs" />
+    <Compile Include="Commons\SortedList.cs" />
+    <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Dto\UserDto.cs" />
     <Compile Include="Forms\Quality\Command\SaveButton.cs" />
-    <Compile Include="Forms\Quality\ModelView\QualityFormMV.cs" />
+    <Compile Include="Forms\Quality\ModelView\QualityDataMV.cs" />
+    <Compile Include="Forms\Quality\ModelView\QualityMV.cs" />
     <Compile Include="Forms\Quality\Model\QualityModel.cs" />
     <Compile Include="Forms\Quality\Model\WindowData.cs" />
     <Compile Include="Forms\Quality\Model\WindowSettings.cs" />
@@ -169,5 +172,6 @@
   <ItemGroup>
     <Resource Include="Forms\Login\Ok-icon.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

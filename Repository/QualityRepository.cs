@@ -1,12 +1,8 @@
 ﻿using Quality_Control.Commons;
 using Quality_Control.Forms.Quality.Model;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Quality_Control.Repository
@@ -16,7 +12,9 @@ namespace Quality_Control.Repository
         private readonly string _getAllByYearQuery = "Select q.id, (CAST(q.number as varchar) + '/' + RIGHT(CAST(DATEPART(yy, q.production_date) as varchar), 2)) " +
             "as number_year , q.number, q.product_name, q.product_index, q.labbook_id, q.remarks, q.active_fields, q.production_date, q.login_id, u.login, q.product_type_id, t.name " +
             "From LabBook.dbo.QualityControl q left join LabBook.dbo.Users u on q.login_id= u.id left join LabBook.dbo.CmbPaintType t on q.product_type_id= t.id " +
-            "Where YEAR(q.production_date)=";
+            "Where YEAR(q.production_date)=XXXX Order By q.number";
+        private readonly string _qualityDataQuery = "Select DATEDIFF(day, production_date, measure_date) as days_distance, d.* from LabBook.dbo.QualityControlData d " +
+            "left join LabBook.dbo.QualityControl q on d.quality_id=q.id Where d.quality_id=XXXX Order by days_distance, d.quality_id";
 
         public SortableObservableCollection<QualityModel> GetAllByYear(int year)
         {
@@ -26,7 +24,7 @@ namespace Quality_Control.Repository
             {
                 try
                 {
-                    string query = _getAllByYearQuery + year.ToString();
+                    string query = _getAllByYearQuery.Replace("XXXX", year.ToString());
                     SqlCommand sqlCmd = new SqlCommand(query, connection);
                     connection.Open();
                     SqlDataReader reader = sqlCmd.ExecuteReader();
@@ -74,6 +72,61 @@ namespace Quality_Control.Repository
             }
 
             return quality;
+        }
+
+        public DataTable GetQualityDataByQualityId(long id)
+        {
+            DataTable table = new DataTable();
+
+            using (var connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString()))
+            {
+                try
+                {
+                    string kwer = _qualityDataQuery.Replace("XXXX", id.ToString());
+                    SqlDataAdapter adapter = new SqlDataAdapter(kwer, connection);
+                    adapter.Fill(table);
+                }
+                catch (SqlException ex)
+                {
+                    _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                        "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                        "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    if (connection.State == ConnectionState.Open)
+                        connection.Close();
+                }
+            }
+
+            return table;
+        }
+
+        public void LoadQualityDataById(DataTable table, long id)
+        {
+            using (var connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString()))
+            {
+                try
+                {
+                    string kwer = _qualityDataQuery.Replace("XXXX", id.ToString());
+                    SqlDataAdapter adapter = new SqlDataAdapter(kwer, connection);
+                    adapter.Fill(table);
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                        "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                        "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }
