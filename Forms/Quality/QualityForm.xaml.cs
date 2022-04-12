@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Quality_Control.Forms.Quality.ModelView;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,11 @@ namespace Quality_Control.Forms.Quality
         public QualityForm()
         {
             InitializeComponent();
+
+            QualityMV view = (QualityMV)DataContext;
+            QualityDataMV qualityDataMV = Resources["QualityData"] as QualityDataMV;
+
+            view.SetQualityDataMV(qualityDataMV);
         }
     }
 }

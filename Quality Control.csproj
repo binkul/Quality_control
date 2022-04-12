@@ -81,6 +81,7 @@
     <Compile Include="Commons\SortedList.cs" />
     <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Dto\UserDto.cs" />
+    <Compile Include="Forms\Quality\Command\DeleteQualityDataButton.cs" />
     <Compile Include="Forms\Quality\Command\SaveButton.cs" />
     <Compile Include="Forms\Quality\ModelView\QualityDataMV.cs" />
     <Compile Include="Forms\Quality\ModelView\QualityMV.cs" />
@@ -94,11 +95,13 @@
       <DependentUpon>RegisterForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Tools\WindowsOperation.cs" />
+    <Compile Include="Repository\QualityDataRepository.cs" />
     <Compile Include="Repository\QualityRepository.cs" />
     <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Security\Encrypt.cs" />
     <Compile Include="Security\User.cs" />
     <Compile Include="Security\UserSingleton.cs" />
+    <Compile Include="Service\QualityDataService.cs" />
     <Compile Include="Service\QualityService.cs" />
   </ItemGroup>
   <ItemGroup>

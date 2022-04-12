@@ -4,9 +4,7 @@ using Quality_Control.Forms.Quality.Command;
 using Quality_Control.Forms.Quality.Model;
 using Quality_Control.Service;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -22,7 +20,8 @@ namespace Quality_Control.Forms.Quality.ModelView
         private readonly QualityService _service = new QualityService();
         private int _selectedIndex;
         private string _remarks;
-        private DateTime _productionDate;       
+        private QualityDataMV _qualityDataMV;
+        private DateTime _productionDate;
 
         public SortableObservableCollection<QualityModel> Quality { get; }
         public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
@@ -68,9 +67,12 @@ namespace Quality_Control.Forms.Quality.ModelView
             //}
         }
 
-        protected QualityService Service => _service;
+        public void SetQualityDataMV(QualityDataMV qualityDataMV)
+        {
+            _qualityDataMV = qualityDataMV;
+        }
 
-        //public DataView QualityData => _service.DataQualityView; 
+        protected QualityService Service => _service;
 
         public bool Modified 
         {
@@ -129,10 +131,12 @@ namespace Quality_Control.Forms.Quality.ModelView
                 _selectedIndex = value;
                 _remarks = Quality[_selectedIndex].Remarks;
                 _productionDate = Quality[_selectedIndex].ProductionDate;
-                _service.RefreshQualityData(Quality[_selectedIndex].Id);
                 OnPropertyChanged(nameof(SelectedIndex));
                 OnPropertyChanged(nameof(Remarks));
                 OnPropertyChanged(nameof(ProductionDate));
+
+                if (_qualityDataMV != null)
+                    _qualityDataMV.RefreshQualityData(Quality[_selectedIndex].Id);
             }
         }
 
