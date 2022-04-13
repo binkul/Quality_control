@@ -1,17 +1,5 @@
 ﻿using Quality_Control.Forms.Quality.ModelView;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Quality_Control.Forms.Quality
 {
@@ -26,6 +14,7 @@ namespace Quality_Control.Forms.Quality
 
             QualityMV view = (QualityMV)DataContext;
             QualityDataMV qualityDataMV = Resources["QualityData"] as QualityDataMV;
+            qualityDataMV.RefreshQualityData(view.Quality[view.SelectedIndex].Id);
 
             view.SetQualityDataMV(qualityDataMV);
         }

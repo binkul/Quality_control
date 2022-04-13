@@ -119,7 +119,7 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
-        public Thickness TxtNumberLeftPosition => new Thickness(_startLeftPosition, 0, 0, 0);
+        public Thickness TxtNumberLeftPosition => new Thickness(_startLeftPosition, 0, 0, 5);
 
         public int SelectedIndex
         {

@@ -43,6 +43,14 @@
             <Setter Property="Padding" Value="3,0,0,0" />
             <Setter Property="FontWeight" Value="Normal" />
         </Style>
+        <Style x:Key="DateErrorStyle" TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="Background" Value="Yellow"/>
+                    <Setter Property="ToolTip" Value="Niepoprawny format daty"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <SolidColorBrush x:Key="DataGridBorderColor" Color="#FFB1AEAE"/>
     </Window.Resources>
     <i:Interaction.Triggers>
@@ -125,9 +133,9 @@
             </Grid.RowDefinitions>
             
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
-                <TextBox x:Name="TxtFilterNumber" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="{Binding TxtNumberLeftPosition}" 
+                <TextBox x:Name="TxtFilterNumber" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="{Binding TxtNumberLeftPosition}" 
                          Width="{Binding ElementName=ColYearNumber, Path=ActualWidth}"/>
-                <TextBox x:Name="TxtFilterNname" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,0" 
+                <TextBox x:Name="TxtFilterNname" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="1,0,0,5" 
                          Width="{Binding ElementName=ColProductName, Path=ActualWidth}"/>
             </StackPanel>
             
@@ -202,9 +210,6 @@
                 <DatePicker x:Name="DpPicker" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2,0,0,0"
                             SelectedDateFormat="Short"
                             Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
-                <!--<Label x:Name="LblDate" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
-                       Margin="2,0,0,0" Padding="4,5,5,1" 
-                       Content="{Binding SelectedItem.ProductionDate, ElementName=DgQuality, Converter={StaticResource DateTimeConverter}}"/>-->
                 <Label x:Name="LblProduct" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
                        Padding="10,1,5,5" Foreground="Red" 
                        Content="{Binding SelectedItem.ProductName, ElementName=DgQuality, Mode=OneWay}"/>
@@ -241,19 +246,18 @@
 
                     <!-- Measure date -->
                     <DataGridTextColumn Header="Data" Width="80" CanUserSort="False"
+                                        Binding="{Binding measure_date, Converter={StaticResource DateTimeConverter}, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DateErrorStyle}"
                                         HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
-                                        ElementStyle="{StaticResource AllignCellCenter}"
-                                        Binding="{Binding measure_date}">
-                    </DataGridTextColumn>
-                    
-                    <!-- days distance -->
-                    <DataGridTextColumn Header="Doba" Width="50" CanUserSort="False" IsReadOnly="True"
-                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
-                                        ElementStyle="{StaticResource AllignCellCenter}"
-                                        Binding="{Binding days_distance}">
-                    </DataGridTextColumn>
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
 
+                    <!-- days distance -->
+                    <DataGridTextColumn Header="Doba" Width="50" CanUserSort="False" IsReadOnly="True" 
+                                        Binding="{Binding days_distance}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
                 </DataGrid.Columns>
+
             </DataGrid>
 
             <!-- Remarks -->
