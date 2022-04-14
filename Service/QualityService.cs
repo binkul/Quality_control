@@ -1,6 +1,7 @@
 ﻿using Quality_Control.Commons;
 using Quality_Control.Forms.Quality.Model;
 using Quality_Control.Repository;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 

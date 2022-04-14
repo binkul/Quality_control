@@ -79,6 +79,7 @@
     <Compile Include="Commons\RepositoryCommon.cs" />
     <Compile Include="Commons\SortableObservableCollection.cs" />
     <Compile Include="Commons\SortedList.cs" />
+    <Compile Include="Converters\ColumnVisibilityConverter.cs" />
     <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Dto\UserDto.cs" />
     <Compile Include="Forms\Quality\Command\DeleteQualityDataButton.cs" />

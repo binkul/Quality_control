@@ -22,6 +22,7 @@
     <Window.Resources>
         <vm:QualityDataMV x:Key="QualityData" />
         <Convertors:DateTimeConverter x:Key="DateTimeConverter" />
+        <Convertors:ColumnVisibilityConverter x:Key="ColumnVisibility" />
         <Style x:Key="AllignColmnHeaderCenter" TargetType="DataGridColumnHeader">
             <Setter Property="SeparatorBrush" Value="WhiteSmoke" />
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -30,14 +31,14 @@
             <Setter Property="Height" Value="25" />
         </Style>
         <Style x:Key="AllignCellCenter" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Padding" Value="0,0,0,0" />
             <Setter Property="FontWeight" Value="Normal" />
         </Style>
         <Style x:Key="AllignCellLeft" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Padding" Value="3,0,0,0" />
@@ -51,6 +52,15 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="DoubleErrorStyle" TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="Background" Value="Yellow"/>
+                    <Setter Property="ToolTip" Value="Wartość nie jest liczbą"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <SolidColorBrush x:Key="DataGridBorderColor" Color="#FFB1AEAE"/>
     </Window.Resources>
     <i:Interaction.Triggers>
@@ -216,9 +226,11 @@
             </StackPanel>
             
             <!--#### Measure DataGrid -->
-            <DataGrid x:Name="DgQualityData" Grid.Column="2" Grid.Row="1" Margin="2,2,5,2" AutoGenerateColumns="False"
+            <DataGrid x:Name="DgQualityData" Grid.Column="2" Grid.Row="1" Margin="2,2,5,2" AutoGenerateColumns="False" FrozenColumnCount="5" HorizontalScrollBarVisibility="Auto"
                       ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow"  IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
                       CanUserAddRows="True" CanUserDeleteRows="True" CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column"
+                      HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
+                      VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       SelectedIndex="{Binding Source={StaticResource QualityData}, Path=DataGriddRowIndex, Mode=TwoWay, FallbackValue=0}"
                       ItemsSource="{Binding Source={StaticResource QualityData}, Path=QualityDataView, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Triggers>
@@ -250,12 +262,668 @@
                                         EditingElementStyle="{StaticResource DateErrorStyle}"
                                         HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
                                         ElementStyle="{StaticResource AllignCellCenter}" />
-
                     <!-- days distance -->
-                    <DataGridTextColumn Header="Doba" Width="50" CanUserSort="False" IsReadOnly="True" 
+                    <DataGridTextColumn Header="Doba" Width="55" CanUserSort="False" IsReadOnly="True" 
                                         Binding="{Binding days_distance}"
                                         HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
                                         ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- temperature -->
+                    <DataGridTextColumn Header="Temp" Width="55" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=temp}" 
+                                        Binding="{Binding temp, Mode=TwoWay}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- density -->
+                    <DataGridTextColumn Header="Gęstość" Width="80" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=density}" 
+                                        Binding="{Binding density, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- pH -->
+                    <DataGridTextColumn Header="pH" Width="45" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=pH}" 
+                                        Binding="{Binding pH, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_1 -->
+                    <DataGridTextColumn Header="Lep 1" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_1}" 
+                                        Binding="{Binding vis_1, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_2 -->
+                    <DataGridTextColumn Header="Lep 2" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_2}" 
+                                        Binding="{Binding vis_2, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_5 -->
+                    <DataGridTextColumn Header="Lep 5" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_5}" 
+                                        Binding="{Binding vis_5, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_10 -->
+                    <DataGridTextColumn Header="Lep 10" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_10}" 
+                                        Binding="{Binding vis_10, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_15 -->
+                    <DataGridTextColumn Header="Lep 15" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_15}" 
+                                        Binding="{Binding vis_15, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_20 -->
+                    <DataGridTextColumn Header="Lep 20" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_20}" 
+                                        Binding="{Binding vis_20, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_25 -->
+                    <DataGridTextColumn Header="Lep 25" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_25}" 
+                                        Binding="{Binding vis_25, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_30 -->
+                    <DataGridTextColumn Header="Lep 30" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_30}" 
+                                        Binding="{Binding vis_30, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_35 -->
+                    <DataGridTextColumn Header="Lep 35" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_35}" 
+                                        Binding="{Binding vis_35, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_40 -->
+                    <DataGridTextColumn Header="Lep 40" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_40}" 
+                                        Binding="{Binding vis_40, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_45 -->
+                    <DataGridTextColumn Header="Lep 45" Width="90" CanUserSort="False" 
+                                         Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_45}" 
+                                       Binding="{Binding vis_45, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_50 -->
+                    <DataGridTextColumn Header="Lep 50" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_50}" 
+                                        Binding="{Binding vis_50, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_55 -->
+                    <DataGridTextColumn Header="Lep 55" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_55}" 
+                                        Binding="{Binding vis_55, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_60 -->
+                    <DataGridTextColumn Header="Lep 60" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_60}" 
+                                        Binding="{Binding vis_60, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_65 -->
+                    <DataGridTextColumn Header="Lep 65" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_65}" 
+                                        Binding="{Binding vis_65, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_70 -->
+                    <DataGridTextColumn Header="Lep 70" Width="90" CanUserSort="False" 
+                                         Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_70}" 
+                                       Binding="{Binding vis_70, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_75 -->
+                    <DataGridTextColumn Header="Lep 75" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                   Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_75}" 
+                                        Binding="{Binding vis_75, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_80 -->
+                    <DataGridTextColumn Header="Lep 80" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_80}" 
+                                        Binding="{Binding vis_80, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_85 -->
+                    <DataGridTextColumn Header="Lep 85" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_85}" 
+                                        Binding="{Binding vis_85, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_90 -->
+                    <DataGridTextColumn Header="Lep 90" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_90}" 
+                                        Binding="{Binding vis_90, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_95 -->
+                    <DataGridTextColumn Header="Lep 95" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_95}" 
+                                        Binding="{Binding vis_95, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- vis_100 -->
+                    <DataGridTextColumn Header="Lep 100" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=vis_100}" 
+                                        Binding="{Binding vis_100, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- disc -->
+                    <DataGridTextColumn Header="Dysk" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=disc}" 
+                                        Binding="{Binding disc, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- visc remarks -->
+                    <DataGridTextColumn Header="Lepkość uwagi" Width="200" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=visc_remarks}" 
+                                        Binding="{Binding visc_remarks, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast 75 -->
+                    <DataGridTextColumn Header="Krycie 75" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_75}" 
+                                        Binding="{Binding contrast_75, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast 100 -->
+                    <DataGridTextColumn Header="Krycie 100" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_100}" 
+                                        Binding="{Binding contrast_100, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast 125 -->
+                    <DataGridTextColumn Header="Krycie 125" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_125}" 
+                                        Binding="{Binding contrast_125, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast 150 -->
+                    <DataGridTextColumn Header="Krycie 150" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_150}" 
+                                        Binding="{Binding contrast_150, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast 200 -->
+                    <DataGridTextColumn Header="Krycie 200" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_200}" 
+                                        Binding="{Binding contrast_200, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast 240 -->
+                    <DataGridTextColumn Header="Krycie 240" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_240}" 
+                                        Binding="{Binding contrast_240, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast 250 -->
+                    <DataGridTextColumn Header="Krycie 250" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_250}" 
+                                        Binding="{Binding contrast_250, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast 300 -->
+                    <DataGridTextColumn Header="Krycie 300" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_300}" 
+                                        Binding="{Binding contrast_300, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast wire 100 -->
+                    <DataGridTextColumn Header="Śruba 100" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_wire_100}" 
+                                        Binding="{Binding contrast_wire_100, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast wire 125 -->
+                    <DataGridTextColumn Header="Śruba 125" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_wire_125}" 
+                                        Binding="{Binding contrast_wire_125, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast wire 150 -->
+                    <DataGridTextColumn Header="Śruba 150" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_wire_150}" 
+                                        Binding="{Binding contrast_wire_150, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast wire 200 -->
+                    <DataGridTextColumn Header="Śruba 200" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_wire_200}" 
+                                        Binding="{Binding contrast_wire_200, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast wire 250 -->
+                    <DataGridTextColumn Header="Śruba 250" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_wire_250}" 
+                                        Binding="{Binding contrast_wire_250, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contarst class -->
+                    <DataGridTextColumn Header="Krycie klasa" Width="100" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_class}" 
+                                        Binding="{Binding contrast_class, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- contrast remarks -->
+                    <DataGridTextColumn Header="Krycie uwagi" Width="200" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=contrast_remarks}" 
+                                        Binding="{Binding contrast_remarks, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- L wet -->
+                    <DataGridTextColumn Header="L mokry" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=L_m}" 
+                                        Binding="{Binding L_m, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- a wet -->
+                    <DataGridTextColumn Header="a mokry" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=a_m}" 
+                                        Binding="{Binding a_m, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- b wet -->
+                    <DataGridTextColumn Header="b mokry" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=b_m}" 
+                                        Binding="{Binding b_m, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- WI wet -->
+                    <DataGridTextColumn Header="WI mokra" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=WI_m}" 
+                                        Binding="{Binding WI_m, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- YI wet -->
+                    <DataGridTextColumn Header="YI mokra" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=YI_m}" 
+                                        Binding="{Binding YI_m, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- L dry -->
+                    <DataGridTextColumn Header="L suchy" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=L_s}" 
+                                        Binding="{Binding L_s, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- a dry -->
+                    <DataGridTextColumn Header="a suchy" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=a_s}" 
+                                        Binding="{Binding a_s, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- b dry -->
+                    <DataGridTextColumn Header="b suchy" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=b_s}" 
+                                        Binding="{Binding b_s, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- WI dry -->
+                    <DataGridTextColumn Header="WI sucha" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=WI_s}" 
+                                        Binding="{Binding WI_s, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- YI dry -->
+                    <DataGridTextColumn Header="YI suchy" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=YI_s}" 
+                                        Binding="{Binding YI_s, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- DE -->
+                    <DataGridTextColumn Header="DE" Width="50" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=DE}" 
+                                        Binding="{Binding DE, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- spectro remarks -->
+                    <DataGridTextColumn Header="Spektro uwagi" Width="200" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=spectro_remarks}" 
+                                        Binding="{Binding spectro_remarks, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Gloss 20 -->
+                    <DataGridTextColumn Header="Połysk 20" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=gloss_20}" 
+                                        Binding="{Binding gloss_20, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Gloss 60 -->
+                    <DataGridTextColumn Header="Połysk 60" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=gloss_60}" 
+                                        Binding="{Binding gloss_60, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Gloss 85 -->
+                    <DataGridTextColumn Header="Połysk 85" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=gloss_85}" 
+                                        Binding="{Binding gloss_85, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- gloss remarks -->
+                    <DataGridTextColumn Header="Połysk uwagi" Width="200" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=gloss_remarks}" 
+                                        Binding="{Binding gloss_remarks, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Drying I -->
+                    <DataGridTextColumn Header="Schnięcie I" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=drying_I}" 
+                                        Binding="{Binding drying_I, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Drying II -->
+                    <DataGridTextColumn Header="Schnięcie II" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=drying_II}" 
+                                        Binding="{Binding drying_II, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Drying III -->
+                    <DataGridTextColumn Header="Schnięcie III" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=drying_III}" 
+                                        Binding="{Binding drying_III, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Drying VI -->
+                    <DataGridTextColumn Header="Schnięcie VI" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=drying_VI}" 
+                                        Binding="{Binding drying_VI, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Drying V -->
+                    <DataGridTextColumn Header="Schnięcie V" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=drying_V}" 
+                                        Binding="{Binding drying_V, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Drying VI -->
+                    <DataGridTextColumn Header="Schnięcie VI" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=drying_VI}" 
+                                        Binding="{Binding drying_VI, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Drying VII -->
+                    <DataGridTextColumn Header="Schnięcie VII" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=drying_VII}" 
+                                        Binding="{Binding drying_VII, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Drying remarks -->
+                    <DataGridTextColumn Header="Schnięcie uwagi" Width="200" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=drying_remarks}" 
+                                        Binding="{Binding drying_remarks, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Scrubing brush -->
+                    <DataGridTextColumn Header="Szorowanie szczotka" Width="100" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=scrubing_brush}" 
+                                        Binding="{Binding scrubing_brush, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Scrubing sponge -->
+                    <DataGridTextColumn Header="Szorowanie gąbka" Width="100" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=scrubing_sponge}" 
+                                        Binding="{Binding scrubing_sponge, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Scrubing remarks -->
+                    <DataGridTextColumn Header="Szorowanie uwagi" Width="200" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=scrubing_remarks}" 
+                                        Binding="{Binding scrubing_remarks, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- flow -->
+                    <DataGridTextColumn Header="Rozlewność" Width="100" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=flow}" 
+                                        Binding="{Binding flow, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- runoff -->
+                    <DataGridTextColumn Header="Spływność" Width="100" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=runoff}" 
+                                        Binding="{Binding runoff, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- adhesion -->
+                    <DataGridTextColumn Header="Przyczepność" Width="100" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=adhesion}" 
+                                        Binding="{Binding adhesion, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- solids % -->
+                    <DataGridTextColumn Header="Części stałe" Width="100" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=f_solids}" 
+                                        Binding="{Binding f_solids, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- ash 450 -->
+                    <DataGridTextColumn Header="Popiół 450" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=f_450}" 
+                                        Binding="{Binding f_450, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- ash 900 -->
+                    <DataGridTextColumn Header="Popiół 900" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=f_900}" 
+                                        Binding="{Binding f_900, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- organic -->
+                    <DataGridTextColumn Header="Części organiczne" Width="100" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=f_organic}" 
+                                        Binding="{Binding f_organic, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- lime -->
+                    <DataGridTextColumn Header="Kreda" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=f_lime}" 
+                                        Binding="{Binding f_lime, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- talc -->
+                    <DataGridTextColumn Header="Talk" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=f_talcum}" 
+                                        Binding="{Binding f_talcum, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- titanium -->
+                    <DataGridTextColumn Header="Dwutlenek tytanu" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=f_titanium}" 
+                                        Binding="{Binding f_titanium, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- VOC -->
+                    <DataGridTextColumn Header="VOC" Width="90" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=VOC}" 
+                                        Binding="{Binding VOC, Mode=TwoWay, ConverterCulture='pl-PL', StringFormat={}{0:F}}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- ash remarks -->
+                    <DataGridTextColumn Header="Spalanie uwagi" Width="200" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=f_remarks}" 
+                                        Binding="{Binding f_remarks, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+                    <!-- Comments -->
+                    <DataGridTextColumn Header="Uwagi ogólne" Width="300" CanUserSort="False" 
+                                        Visibility="{Binding Source={StaticResource QualityData}, Path=GetActiveFields, Mode=OneWay, 
+                                                    Converter={StaticResource ColumnVisibility}, ConverterParameter=comments}" 
+                                        Binding="{Binding comments, Mode=TwoWay}"
+                                        EditingElementStyle="{StaticResource DoubleErrorStyle}"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}" />
+
+
                 </DataGrid.Columns>
 
             </DataGrid>

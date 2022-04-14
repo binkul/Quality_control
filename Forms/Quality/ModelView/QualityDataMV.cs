@@ -1,18 +1,24 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Quality_Control.Forms.Quality.Command;
+using Quality_Control.Forms.Quality.Model;
 using Quality_Control.Service;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Quality_Control.Forms.Quality.ModelView
 {
-    class QualityDataMV
+    class QualityDataMV : INotifyPropertyChanged
     {
         private ICommand _delQualityData;
 
         private readonly QualityDataService _service = new QualityDataService();
         private readonly DataTable _qualityDataTable;
+        private readonly List<string> _activeFields = new List<string>() { "measure_date", "temp", "density", "pH", "vis_1", "vis_5", "vis_20", "disc", "comments" };
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public long DataGriddRowIndex { get; set; } = 0;
         public DataView QualityDataView { get; }
         public RelayCommand<InitializingNewItemEventArgs> OnInitializingNewBrookfieldCommand { get; set; }
@@ -25,9 +31,23 @@ namespace Quality_Control.Forms.Quality.ModelView
             QualityDataView = new DataView(_qualityDataTable);
         }
 
-        public void RefreshQualityData(long id)
+        protected void OnPropertyChanged(params string[] names)
         {
-            _service.RefreshQualityData(id, _qualityDataTable);
+            if (PropertyChanged != null)
+            {
+                foreach (string name in names)
+                    PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        public List<string> GetActiveFields => _activeFields;
+
+        public void RefreshQualityData(QualityModel quality)
+        {
+            _service.RefreshQualityData(quality.Id, _qualityDataTable);
+            _activeFields.Clear();
+            _activeFields.AddRange(_service.GetActiveFields(quality));
+            OnPropertyChanged(nameof(GetActiveFields));
         }
 
         public void OnInitializingNewBrookfieldCommandExecuted(InitializingNewItemEventArgs e)

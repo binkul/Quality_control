@@ -14,7 +14,7 @@ namespace Quality_Control.Forms.Quality
 
             QualityMV view = (QualityMV)DataContext;
             QualityDataMV qualityDataMV = Resources["QualityData"] as QualityDataMV;
-            qualityDataMV.RefreshQualityData(view.Quality[view.SelectedIndex].Id);
+            qualityDataMV.RefreshQualityData(view.Quality[view.SelectedIndex]);
 
             view.SetQualityDataMV(qualityDataMV);
         }

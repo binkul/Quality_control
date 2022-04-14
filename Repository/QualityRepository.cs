@@ -71,5 +71,6 @@ namespace Quality_Control.Repository
 
             return quality;
         }
+
     }
 }

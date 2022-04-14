@@ -22,6 +22,7 @@ namespace Quality_Control.Forms.Quality.ModelView
         private string _remarks;
         private QualityDataMV _qualityDataMV;
         private DateTime _productionDate;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public SortableObservableCollection<QualityModel> Quality { get; }
         public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
@@ -31,8 +32,6 @@ namespace Quality_Control.Forms.Quality.ModelView
             Quality = _service.GetAllQuality(DateTime.Today.Year);
             OnClosingCommand = new RelayCommand<CancelEventArgs>(this.OnClosingCommandExecuted);
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(params string[] names)
         {
@@ -136,7 +135,7 @@ namespace Quality_Control.Forms.Quality.ModelView
                 OnPropertyChanged(nameof(ProductionDate));
 
                 if (_qualityDataMV != null)
-                    _qualityDataMV.RefreshQualityData(Quality[_selectedIndex].Id);
+                    _qualityDataMV.RefreshQualityData(Quality[_selectedIndex]);
             }
         }
 
