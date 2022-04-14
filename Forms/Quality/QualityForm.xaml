@@ -231,11 +231,12 @@
                       CanUserAddRows="True" CanUserDeleteRows="True" CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column"
                       HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
+                      IsEnabled="{Binding IsAnyQuality}"
                       SelectedIndex="{Binding Source={StaticResource QualityData}, Path=DataGriddRowIndex, Mode=TwoWay, FallbackValue=0}"
                       ItemsSource="{Binding Source={StaticResource QualityData}, Path=QualityDataView, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="InitializingNewItem">
-                        <cmd:EventToCommand Command="{Binding Source={StaticResource QualityData}, Path=OnInitializingNewBrookfieldCommand}" PassEventArgsToCommand="True" />
+                        <cmd:EventToCommand Command="{Binding Source={StaticResource QualityData}, Path=OnInitializingNewQualityDataCommand}" PassEventArgsToCommand="True" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 

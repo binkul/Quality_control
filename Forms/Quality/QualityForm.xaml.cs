@@ -17,6 +17,7 @@ namespace Quality_Control.Forms.Quality
             qualityDataMV.RefreshQualityData(view.Quality[view.SelectedIndex]);
 
             view.SetQualityDataMV(qualityDataMV);
+            qualityDataMV.SetQualityMV(view);
         }
     }
 }

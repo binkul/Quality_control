@@ -66,18 +66,17 @@ namespace Quality_Control.Forms.Quality.ModelView
             //}
         }
 
-        public void SetQualityDataMV(QualityDataMV qualityDataMV)
+        internal QualityModel GetCurrentQuality => Quality[_selectedIndex];
+
+        public bool IsAnyQuality => Quality.Count > 0;
+
+        internal void SetQualityDataMV(QualityDataMV qualityDataMV)
         {
             _qualityDataMV = qualityDataMV;
         }
 
-        protected QualityService Service => _service;
+        internal bool Modified => Quality.Any(x => x.Modified) || _qualityDataMV != null ? _qualityDataMV.Modified : false;
 
-        public bool Modified 
-        {
-           get => Quality.Any(x => x.Modified == true); 
-        }
-       
         public double FormXpos
         {
             get => _windowData.FormXpos;
@@ -172,7 +171,7 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public void SaveAll()
         {
-          
+            _qualityDataMV.Save();
         }
     }
 }
