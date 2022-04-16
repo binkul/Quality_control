@@ -7,6 +7,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Quality_Control.Forms.Quality.ModelView
@@ -26,11 +27,15 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public SortableObservableCollection<QualityModel> Quality { get; }
         public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
+        public RelayCommand<TextChangedEventArgs> OnProductNameFilterTextChanged { get; set; }
+        public RelayCommand<TextChangedEventArgs> OnProductNumberFilterTextChanged { get; set; }
 
         public QualityMV()
         {
             Quality = _service.GetAllQuality(DateTime.Today.Year);
             OnClosingCommand = new RelayCommand<CancelEventArgs>(this.OnClosingCommandExecuted);
+            OnProductNameFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNameTextChangedFilter);
+            OnProductNumberFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNumberTextChangedFilter);
         }
 
         protected void OnPropertyChanged(params string[] names)
@@ -64,6 +69,26 @@ namespace Quality_Control.Forms.Quality.ModelView
             //{
                 WindowSettings.Save(_windowData);
             //}
+        }
+
+        public string ProductName { get; set; }
+
+        public string ProductNumber { get; set; }
+
+        public void OnProductNameTextChangedFilter(TextChangedEventArgs e)
+        {
+            for (int i = 0; i < Quality.Count; i++)
+            {
+
+            }
+        }
+
+        public void OnProductNumberTextChangedFilter(TextChangedEventArgs e)
+        {
+            for (int i = 0; i < Quality.Count; i++)
+            {
+
+            }
         }
 
         internal QualityModel GetCurrentQuality => Quality[_selectedIndex];

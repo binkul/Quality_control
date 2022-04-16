@@ -144,9 +144,23 @@
             
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
                 <TextBox x:Name="TxtFilterNumber" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="{Binding TxtNumberLeftPosition}" 
-                         Width="{Binding ElementName=ColYearNumber, Path=ActualWidth}"/>
+                         Text="{Binding ProductNumber, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                         Width="{Binding ElementName=ColYearNumber, Path=ActualWidth}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="TextChanged">
+                            <cmd:EventToCommand Command="{Binding OnProductNumberFilterTextChanged}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
                 <TextBox x:Name="TxtFilterNname" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="1,0,0,5" 
-                         Width="{Binding ElementName=ColProductName, Path=ActualWidth}"/>
+                         Text="{Binding ProductName, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                         Width="{Binding ElementName=ColProductName, Path=ActualWidth}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="TextChanged">
+                            <cmd:EventToCommand Command="{Binding OnProductNameFilterTextChanged}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
             </StackPanel>
             
             <!--#### Main DataGrid -->

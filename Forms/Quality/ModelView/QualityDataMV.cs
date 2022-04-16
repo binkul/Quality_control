@@ -24,7 +24,6 @@ namespace Quality_Control.Forms.Quality.ModelView
         public DataView QualityDataView { get; }
         public RelayCommand<InitializingNewItemEventArgs> OnInitializingNewQualityDataCommand { get; set; }
 
-
         public QualityDataMV()
         {
             OnInitializingNewQualityDataCommand = new RelayCommand<InitializingNewItemEventArgs>(OnInitializingNewQualityDataCommandExecuted);
