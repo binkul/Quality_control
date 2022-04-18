@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Quality_Control.Forms.Quality.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;

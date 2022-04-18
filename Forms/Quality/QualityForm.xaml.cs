@@ -1,5 +1,8 @@
-﻿using Quality_Control.Forms.Quality.ModelView;
+﻿using Quality_Control.Forms.Navigation;
+using Quality_Control.Forms.Quality.ModelView;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Quality_Control.Forms.Quality
 {
@@ -14,10 +17,20 @@ namespace Quality_Control.Forms.Quality
 
             QualityMV view = (QualityMV)DataContext;
             QualityDataMV qualityDataMV = Resources["QualityData"] as QualityDataMV;
-            qualityDataMV.RefreshQualityData(view.Quality[view.SelectedIndex]);
+            NavigationMV navigationMV = Resources["navi"] as NavigationMV;
+            qualityDataMV.RefreshQualityData(view.Quality[view.DgRowIndex]);
+
+            navigationMV.ModelView = view;
+            qualityDataMV.SetQualityMV(view);
 
             view.SetQualityDataMV(qualityDataMV);
-            qualityDataMV.SetQualityMV(view);
+            view.SetNavigationMV = navigationMV;
+        }
+
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using Quality_Control.Commons;
+using Quality_Control.Forms.Navigation;
 using Quality_Control.Forms.Quality.Command;
 using Quality_Control.Forms.Quality.Model;
 using Quality_Control.Service;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -12,30 +14,42 @@ using System.Windows.Input;
 
 namespace Quality_Control.Forms.Quality.ModelView
 {
-    class QualityMV : INotifyPropertyChanged
+    class QualityMV : INotifyPropertyChanged, INavigation
     {
         private ICommand _saveButton;
+        private ICommand _deleteButton;
 
         private readonly double _startLeftPosition = 32;
         private readonly WindowData _windowData = WindowSettings.Read();
         private readonly QualityService _service = new QualityService();
+        private QualityDataMV _qualityDataMV;
+        private NavigationMV _navigationMV;
         private int _selectedIndex;
         private string _remarks;
-        private QualityDataMV _qualityDataMV;
+        private string _productName = "";
+        private string _productNumber = "";
+        private int _year = DateTime.Today.Year;
         private DateTime _productionDate;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public SortableObservableCollection<QualityModel> Quality { get; }
+        public SortableObservableCollection<QualityModel> FullQuality { get; private set; }
+        public SortableObservableCollection<QualityModel> Quality { get; private set; }
+        public List<int> Years { get; private set; }
         public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNameFilterTextChanged { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNumberFilterTextChanged { get; set; }
+        public RelayCommand<SelectionChangedEventArgs> OnComboYearSelectionChanged { get; set; }
+
 
         public QualityMV()
         {
-            Quality = _service.GetAllQuality(DateTime.Today.Year);
+            FullQuality = _service.GetAllQuality(DateTime.Today.Year);
+            Quality = FullQuality;
+            Years = _service.GetAllYears();
             OnClosingCommand = new RelayCommand<CancelEventArgs>(this.OnClosingCommandExecuted);
             OnProductNameFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNameTextChangedFilter);
             OnProductNumberFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNumberTextChangedFilter);
+            OnComboYearSelectionChanged = new RelayCommand<SelectionChangedEventArgs>(OnYearSelectionCommandExecuted);
         }
 
         protected void OnPropertyChanged(params string[] names)
@@ -47,60 +61,104 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
-        public void OnClosingCommandExecuted(CancelEventArgs e)
+        private void OnClosingCommandExecuted(CancelEventArgs e)
         {
             MessageBoxResult ansver = MessageBoxResult.No;
 
-            //if (Modified)
-            //{
-            //    ansver = MessageBox.Show("Dokonano zmian w rekordach. Czy zapisać zmiany?", "Zamis zmian", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-            //}
+            if (Modified)
+            {
+                ansver = MessageBox.Show("Dokonano zmian w rekordach. Czy zapisać zmiany?", "Zamis zmian", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            }
 
-            //if (ansver == MessageBoxResult.Yes)
-            //{
-            //    SaveAll();
-            //    WindowSetting.Save(_windowData);
-            //}
-            //else if (ansver == MessageBoxResult.Cancel)
-            //{
-            //    e.Cancel = true;
-            //}
-            //else
-            //{
+            if (ansver == MessageBoxResult.Yes)
+            {
+                SaveAll();
                 WindowSettings.Save(_windowData);
-            //}
-        }
-
-        public string ProductName { get; set; }
-
-        public string ProductNumber { get; set; }
-
-        public void OnProductNameTextChangedFilter(TextChangedEventArgs e)
-        {
-            for (int i = 0; i < Quality.Count; i++)
+            }
+            else if (ansver == MessageBoxResult.Cancel)
             {
-
+                e.Cancel = true;
+            }
+            else
+            {
+                WindowSettings.Save(_windowData);
             }
         }
 
-        public void OnProductNumberTextChangedFilter(TextChangedEventArgs e)
+        private void OnYearSelectionCommandExecuted(SelectionChangedEventArgs e)
         {
-            for (int i = 0; i < Quality.Count; i++)
-            {
-
-            }
+            FullQuality = _service.GetAllQuality(Year);
+            Quality = FullQuality;
+            Filter();
         }
-
-        internal QualityModel GetCurrentQuality => Quality[_selectedIndex];
-
-        public bool IsAnyQuality => Quality.Count > 0;
 
         internal void SetQualityDataMV(QualityDataMV qualityDataMV)
         {
             _qualityDataMV = qualityDataMV;
         }
 
-        internal bool Modified => Quality.Any(x => x.Modified) || _qualityDataMV != null ? _qualityDataMV.Modified : false;
+        internal NavigationMV SetNavigationMV
+        {
+            set => _navigationMV = value;
+        }
+
+        internal bool Modified => (Quality.Any(x => x.Modified) || _qualityDataMV != null) && _qualityDataMV.Modified;
+
+        #region Filtering
+
+        public string ProductName
+        { 
+            get => _productName;
+            set => _productName = value;
+        }
+
+        public string ProductNumber
+        {
+            get => _productNumber;
+            set => _productNumber = value;
+        }
+
+        public void OnProductNameTextChangedFilter(TextChangedEventArgs e)
+        {
+            Filter();
+        }
+
+        public void OnProductNumberTextChangedFilter(TextChangedEventArgs e)
+        {
+            Filter();
+        }
+
+        private void Filter()
+        {
+            if (!string.IsNullOrEmpty(ProductName) || !string.IsNullOrEmpty(ProductNumber))
+            {
+
+                int number = ProductNumber.Length > 0 ? Convert.ToInt32(ProductNumber) : -1;
+
+                var result = FullQuality
+                    .Where(x => x.ProductName.ToLower().Contains(ProductName))
+                    .Where(x => x.Number >= number)
+                    .ToList();
+
+                SortableObservableCollection<QualityModel> newQuality = new SortableObservableCollection<QualityModel>();
+                foreach (QualityModel model in result)
+                {
+                    newQuality.Add(model);
+                }
+
+                Quality = newQuality;
+            }
+            else
+            {
+                Quality = FullQuality;
+            }
+            DgRowIndex = 0;
+            OnPropertyChanged(nameof(Quality));
+        }
+
+        #endregion
+
+        #region Current
 
         public double FormXpos
         {
@@ -142,26 +200,51 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
-        public Thickness TxtNumberLeftPosition => new Thickness(_startLeftPosition, 0, 0, 5);
+        public bool IsFilterOn => ProductName.Length > 0 || ProductNumber.Length > 0;
 
-        public int SelectedIndex
+        public bool IsAnyQuality => Quality.Count > 0;
+
+        internal QualityModel GetCurrentQuality => Quality[_selectedIndex];
+
+        public int DgRowIndex
         {
             get => _selectedIndex;
             set
             {
-                if (value < 0 || Quality.Count == 0 || value >= Quality.Count) return;
-
+                QualityModel model = null;
                 _selectedIndex = value;
-                _remarks = Quality[_selectedIndex].Remarks;
-                _productionDate = Quality[_selectedIndex].ProductionDate;
-                OnPropertyChanged(nameof(SelectedIndex));
-                OnPropertyChanged(nameof(Remarks));
-                OnPropertyChanged(nameof(ProductionDate));
 
-                if (_qualityDataMV != null)
-                    _qualityDataMV.RefreshQualityData(Quality[_selectedIndex]);
+                if (value >= 0 && Quality.Count != 0 && value < Quality.Count)
+                {
+                    model = Quality[_selectedIndex];
+                    _remarks = model.Remarks;
+                    _productionDate = model.ProductionDate;
+                    IsTextBoxActive = true;
+                }
+                else
+                {
+                    _remarks = "";
+                    _productionDate = DateTime.Today;
+                    IsTextBoxActive = false;
+                }
+                OnPropertyChanged(nameof(DgRowIndex),
+                    nameof(IsAnyQuality),
+                    nameof(Remarks),
+                    nameof(ProductionDate),
+                    nameof(IsTextBoxActive));
+
+                if (_qualityDataMV != null) _qualityDataMV.RefreshQualityData(model);
             }
         }
+
+        public int GetRowCount => Quality.Count;
+
+        public void Refresh()
+        {
+            _navigationMV.Refresh();
+        }
+
+        public bool IsTextBoxActive { get; set; } = true;
 
         public string Remarks
         {
@@ -185,6 +268,16 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
+        public int Year
+        {
+            get => _year;
+            set => _year = value;
+        }
+
+        #endregion
+
+        public Thickness TxtNumberLeftPosition => new Thickness(_startLeftPosition, 0, 0, 5);
+
         public ICommand SaveButton
         {
             get
@@ -194,9 +287,24 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
+        public ICommand DeleteButton
+        {
+            get
+            {
+                if (_deleteButton == null) _deleteButton = new DeleteButton(this);
+                return _deleteButton;
+            }
+        }
+
         public void SaveAll()
         {
+
             _qualityDataMV.Save();
+        }
+
+        public void DeleteAll()
+        {
+            
         }
     }
 }

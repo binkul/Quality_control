@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Quality_Control.Forms.Quality"
         xmlns:Convertors="clr-namespace:Quality_Control.Converters"
         xmlns:vm ="clr-namespace:Quality_Control.Forms.Quality.ModelView"
+        xmlns:naviMV="clr-namespace:Quality_Control.Forms.Navigation"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:cmd="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
@@ -21,8 +22,10 @@
     </Window.DataContext>
     <Window.Resources>
         <vm:QualityDataMV x:Key="QualityData" />
+        <naviMV:NavigationMV x:Key="navi" />
         <Convertors:DateTimeConverter x:Key="DateTimeConverter" />
         <Convertors:ColumnVisibilityConverter x:Key="ColumnVisibility" />
+        <Convertors:IgnoreNewItemPlaceholderConverter x:Key="IgnoreNewItemConverter" />
         <Style x:Key="AllignColmnHeaderCenter" TargetType="DataGridColumnHeader">
             <Setter Property="SeparatorBrush" Value="WhiteSmoke" />
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -69,7 +72,7 @@
             <cmd:EventToCommand Command="{Binding OnClosingCommand}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <DockPanel>
+    <DockPanel Margin="0,0,0,0" LastChildFill="True">
 
         <Ribbon DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">
             <RibbonTab Header="Kontrola jakości">
@@ -93,7 +96,8 @@
                             </ToolTip>
                         </RibbonButton.ToolTip>
                     </RibbonButton>
-                    <RibbonButton Label="Usuń" LargeImageSource="/Img/delete.png" FontWeight="Regular">
+                    <RibbonButton Label="Usuń" LargeImageSource="/Img/delete.png" FontWeight="Regular"
+                                  Command="{Binding DeleteButton}">
                         <RibbonButton.ToolTip >
                             <ToolTip Background="Yellow">
                                 <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
@@ -103,12 +107,21 @@
                         </RibbonButton.ToolTip>
                     </RibbonButton>
                 </RibbonGroup>
-                <RibbonGroup Header="Pomiary" FontSize="10">
-                    <RibbonButton Label="Usuń pomiar" LargeImageSource="/Img/Trash.png" FontWeight="Regular">
+                <RibbonGroup Header="Ustawienia" FontSize="10">
+                    <RibbonButton Label="Modyfikuj" LargeImageSource="/Img/Modify.png" FontWeight="Regular">
                         <RibbonButton.ToolTip >
                             <ToolTip Background="Yellow">
                                 <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
-                                    <TextBlock FontSize="12">Usuń bierzący pomiar</TextBlock>
+                                    <TextBlock FontSize="12">Modyfikuj bierzący wyrób</TextBlock>
+                                </DockPanel>
+                            </ToolTip>
+                        </RibbonButton.ToolTip>
+                    </RibbonButton>
+                    <RibbonButton Label="Ustawienia" LargeImageSource="/Img/Settings.png" FontWeight="Regular">
+                        <RibbonButton.ToolTip >
+                            <ToolTip Background="Yellow">
+                                <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
+                                    <TextBlock FontSize="12">Ustawienia dla wszystkich</TextBlock>
                                 </DockPanel>
                             </ToolTip>
                         </RibbonButton.ToolTip>
@@ -128,7 +141,7 @@
             </RibbonTab>
         </Ribbon>
         
-        <Grid Background="#FFE5E5E5">
+        <Grid DockPanel.Dock="Top" Background="#FFE5E5E5" VerticalAlignment="Top">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300" />
@@ -140,10 +153,13 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="80" />
                 <RowDefinition Height="30" />
+                <RowDefinition Height="25" />
             </Grid.RowDefinitions>
             
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
-                <TextBox x:Name="TxtFilterNumber" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="{Binding TxtNumberLeftPosition}" 
+                <TextBox x:Name="TxtFilterNumber" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
+                         PreviewTextInput="NumberValidationTextBox"
+                         Margin="{Binding TxtNumberLeftPosition}" 
                          Text="{Binding ProductNumber, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                          Width="{Binding ElementName=ColYearNumber, Path=ActualWidth}">
                     <i:Interaction.Triggers>
@@ -170,7 +186,7 @@
                       HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       ItemsSource="{Binding Quality}"
-                      SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, FallbackValue=0}">
+                      SelectedIndex="{Binding DgRowIndex, Mode=TwoWay, FallbackValue=0}">
                 
                 <DataGrid.Columns>
                     
@@ -226,13 +242,22 @@
             <!--#### ComboBox Year -->
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3" >
                 <Label Content="Wybierz rok produkcji" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Blue" />
-                <ComboBox x:Name="CmbYear" FontSize="12" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="60,0,0,0" />
+                <ComboBox x:Name="CmbYear" FontSize="12" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="62,0,0,0" 
+                          SelectedValue="{Binding Year}"
+                          ItemsSource="{Binding Years}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <cmd:EventToCommand Command="{Binding OnComboYearSelectionChanged}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
             </StackPanel>
             
             <!-- #### Date label and name -->
             <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="0" >
                 <DatePicker x:Name="DpPicker" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2,0,0,0"
                             SelectedDateFormat="Short"
+                            IsEnabled="{Binding IsTextBoxActive}"
                             Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
                 <Label x:Name="LblProduct" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
                        Padding="10,1,5,5" Foreground="Red" 
@@ -245,7 +270,8 @@
                       CanUserAddRows="True" CanUserDeleteRows="True" CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column"
                       HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
-                      IsEnabled="{Binding IsAnyQuality}"
+                      IsEnabled="{Binding IsAnyQuality, Mode=OneWay}"
+                      SelectedItem="{Binding Source={StaticResource QualityData}, Path=ActualDataGridRow, Mode=OneWayToSource, Converter={StaticResource IgnoreNewItemConverter}}"
                       SelectedIndex="{Binding Source={StaticResource QualityData}, Path=DataGriddRowIndex, Mode=TwoWay, FallbackValue=0}"
                       ItemsSource="{Binding Source={StaticResource QualityData}, Path=QualityDataView, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Triggers>
@@ -946,10 +972,44 @@
             <!-- Remarks -->
             <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2" >
                 <Label Content="Uwagi" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,5,0,0" Foreground="Blue" FontSize="14" />
-                <TextBox Margin="2,2,5,2" Height="50" AcceptsReturn="True" 
+                <TextBox Margin="2,2,5,2" Height="50" AcceptsReturn="True"
+                         IsEnabled="{Binding IsTextBoxActive}"
                          Text="{Binding Remarks, Mode=TwoWay}"/>
             </StackPanel>
             
+            <!-- Navigation -->
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="4" Grid.RowSpan="3" >
+                <Button  x:Name="BtnNaviLeftFirst" Height="20" Width="20" Tag="first" Margin="5,0,0,0" >
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="/img/arrow-left_first.png" Stretch="Fill" Height="13"/>
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="BtnNaviLeft" Height="20" Width="20" Tag="left" Margin="1,0,0,0">
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="/img/arrow-left.png" Stretch="Fill" Height="13"/>
+                    </StackPanel>
+                </Button>
+
+                <TextBox x:Name="TxtNavieRec" Width="55" HorizontalAlignment="Left" Padding="0,2,0,0" FontSize="11" Height="20"
+                     FontWeight="SemiBold" IsReadOnly="True" Margin="1,0,0,0" />
+
+                <Label x:Name="LblNavieRec" Height="20" Width="49" HorizontalAlignment="Left" FontSize="11" FontWeight="SemiBold" 
+                   Padding="0,3,0,0" Margin="1,0,0,0"/>
+
+                <Button x:Name="BtnNaviRight" HorizontalAlignment="Left" Height="20" Width="20" Tag="right" Margin="1,0,0,0">
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="/img/arrow-right.png" Stretch="Fill" Height="13"/>
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="BtnNaviRightLast" HorizontalAlignment="Left" Height="20" Width="20" Tag="last" Margin="1,0,0,0">
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="/img/arrow-right_last.png" Stretch="Fill" Height="13"/>
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
         </Grid>
         
     </DockPanel>

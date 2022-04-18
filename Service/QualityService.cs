@@ -22,5 +22,10 @@ namespace Quality_Control.Service
             list.Sort(x => x.Number, ListSortDirection.Ascending);
             return list;
         }
+
+        public List<int> GetAllYears()
+        {
+            return _repository.GetAllYears();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Quality_Control.Commons;
 using Quality_Control.Forms.Quality.Model;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
@@ -13,6 +14,7 @@ namespace Quality_Control.Repository
             "as number_year , q.number, q.product_name, q.product_index, q.labbook_id, q.remarks, q.active_fields, q.production_date, q.login_id, u.login, q.product_type_id, t.name " +
             "From LabBook.dbo.QualityControl q left join LabBook.dbo.Users u on q.login_id= u.id left join LabBook.dbo.CmbPaintType t on q.product_type_id= t.id " +
             "Where YEAR(q.production_date)=XXXX Order By q.number";
+        private readonly string _allYearsQuery = "Select Distinct YEAR(production_date) as year from Labbook.dbo.QualityControl Order by YEAR(production_date)";
 
         public SortableObservableCollection<QualityModel> GetAllByYear(int year)
         {
@@ -70,6 +72,44 @@ namespace Quality_Control.Repository
             }
 
             return quality;
+        }
+
+        public List<int> GetAllYears()
+        {
+            List<int> years = new List<int>();
+
+            using (var connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString()))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand(_allYearsQuery, connection);
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            int year = reader.GetInt32(0);
+                            years.Add(year);
+                        }
+                        reader.Close();
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                        "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                        "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+            return years;
+
         }
 
     }

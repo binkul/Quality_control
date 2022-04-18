@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Quality_Control.Forms.Quality.Command
 {
-    class SaveButton : ICommand
+    internal class SaveButton : ICommand
     {
         private readonly QualityMV _modelView;
 

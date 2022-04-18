@@ -42,5 +42,9 @@ namespace Quality_Control.Service
             return result;
         }
 
+        public void Delete(long id)
+        {
+            _repository.DeleteQualityDataById(id);
+        }
     }
 }
