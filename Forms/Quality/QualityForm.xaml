@@ -188,13 +188,8 @@
                       HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       ItemsSource="{Binding Quality}"
-                      SelectedItem="{Binding ActualQuality}"
-                      SelectedIndex="{Binding DgRowIndex, Mode=TwoWay, FallbackValue=0}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <cmd:EventToCommand Command="{Binding OnSelectionChangedCommand}" PassEventArgsToCommand="True" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                      SelectedItem="{Binding ActualQuality, Mode=OneWayToSource}"
+                      SelectedIndex="{Binding DgRowIndex, Mode=TwoWay, FallbackValue=0}" SelectionChanged="DgQuality_SelectionChanged">
 
                 <DataGrid.Columns>
                     

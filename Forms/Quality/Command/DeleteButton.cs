@@ -28,7 +28,7 @@ namespace Quality_Control.Forms.Quality.Command
 
         public bool CanExecute(object parameter)
         {
-            return !_modelView.IsFilterOn;
+            return _modelView.GetRowCount > 0;
         }
 
         public void Execute(object parameter)

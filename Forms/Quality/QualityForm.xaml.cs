@@ -2,6 +2,7 @@
 using Quality_Control.Forms.Quality.ModelView;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Quality_Control.Forms.Quality
@@ -31,6 +32,22 @@ namespace Quality_Control.Forms.Quality
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void DgQuality_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int index = DgQuality.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+
+            object item = DgQuality.Items[index];
+            if (!(DgQuality.ItemContainerGenerator.ContainerFromIndex(index) is DataGridRow))
+            {
+                DgQuality.ScrollIntoView(item);
+            }
+
         }
     }
 }

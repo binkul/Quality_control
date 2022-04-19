@@ -25,7 +25,7 @@ namespace Quality_Control.Forms.Quality.ModelView
         private readonly QualityService _service = new QualityService();
         private QualityDataMV _qualityDataMV;
         private NavigationMV _navigationMV;
-        private DataRowView _actualRow;
+        private QualityModel _actualRow;
         private int _selectedIndex;
         private string _remarks;
         private string _productName = "";
@@ -41,7 +41,6 @@ namespace Quality_Control.Forms.Quality.ModelView
         public RelayCommand<TextChangedEventArgs> OnProductNameFilterTextChanged { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNumberFilterTextChanged { get; set; }
         public RelayCommand<SelectionChangedEventArgs> OnComboYearSelectionChanged { get; set; }
-        public RelayCommand<SelectionChangedEventArgs> OnSelectionChangedCommand { get; set; }
 
 
         public QualityMV()
@@ -53,7 +52,6 @@ namespace Quality_Control.Forms.Quality.ModelView
             OnProductNameFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNameTextChangedFilter);
             OnProductNumberFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNumberTextChangedFilter);
             OnComboYearSelectionChanged = new RelayCommand<SelectionChangedEventArgs>(OnYearSelectionCommandExecuted);
-            OnSelectionChangedCommand = new RelayCommand<SelectionChangedEventArgs>(this.OnSelectionChangedCommandExecuted);
         }
 
         internal void SetQualityDataMV(QualityDataMV qualityDataMV)
@@ -108,24 +106,6 @@ namespace Quality_Control.Forms.Quality.ModelView
             FullQuality = _service.GetAllQuality(Year);
             Quality = FullQuality;
             Filter();
-        }
-
-        public void OnSelectionChangedCommandExecuted(SelectionChangedEventArgs e)
-        {
-            DataGrid grid = (DataGrid)e.Source;
-
-            var index = grid.SelectedIndex;
-            if (index < 0)
-            {
-                return;
-            }
-
-            var item = grid.Items[index];
-            DataGridRow row = grid.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
-            if (row == null)
-            {
-                grid.ScrollIntoView(item);
-            }
         }
 
         #endregion
@@ -232,7 +212,7 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         internal QualityModel GetCurrentQuality => Quality[_selectedIndex];
 
-        public DataRowView ActualQuality
+        public QualityModel ActualQuality
         {
             private get => _actualRow;
             set => _actualRow = value;
@@ -340,7 +320,13 @@ namespace Quality_Control.Forms.Quality.ModelView
         {
             if (ActualQuality == null) return;
 
-            _service.Delete(ActualQuality);
+            long id = ActualQuality.Id;
+            if (_service.Delete(ActualQuality))
+            {
+                QualityModel quality = FullQuality.First(x => x.Id == id);
+                _ = FullQuality.Remove(quality);
+                _ = Quality.Remove(quality);
+            }
         }
     }
 }

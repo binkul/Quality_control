@@ -1,10 +1,8 @@
 ﻿using Quality_Control.Commons;
 using Quality_Control.Forms.Quality.Model;
 using Quality_Control.Repository;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Windows;
 
 namespace Quality_Control.Service
@@ -30,18 +28,19 @@ namespace Quality_Control.Service
             return _repository.GetAllYears();
         }
 
-        public bool Delete(DataRowView quality)
+        public bool Delete(QualityModel quality)
         {
-            bool result = true;
-            long id = Convert.ToInt64(quality["id"]);
-            int number = Convert.ToInt32(quality["number"]);
-            string name = quality["product_name"].ToString();
+            long id = quality.Id;
+            QualityDataRepository qualityDataRepository = new QualityDataRepository();
 
-            if (MessageBox.Show("Czy na pewno usunąć produkcję P" + number + " '" + name + "' z listy?", "Usuwanie", 
+            bool result;
+            if (MessageBox.Show("Czy na pewno usunąć produkcję P" + quality.Number + " '" + quality.ProductName + "' z listy?", "Usuwanie",
                 MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-
+                result = _repository.DeleteQualityById(id) && qualityDataRepository.DeleteQualityDataByQualityId(id);
             }
+            else
+                return false;
 
             return result;
         }
