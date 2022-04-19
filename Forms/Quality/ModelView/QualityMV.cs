@@ -7,6 +7,7 @@ using Quality_Control.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +25,7 @@ namespace Quality_Control.Forms.Quality.ModelView
         private readonly QualityService _service = new QualityService();
         private QualityDataMV _qualityDataMV;
         private NavigationMV _navigationMV;
+        private DataRowView _actualRow;
         private int _selectedIndex;
         private string _remarks;
         private string _productName = "";
@@ -39,6 +41,7 @@ namespace Quality_Control.Forms.Quality.ModelView
         public RelayCommand<TextChangedEventArgs> OnProductNameFilterTextChanged { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNumberFilterTextChanged { get; set; }
         public RelayCommand<SelectionChangedEventArgs> OnComboYearSelectionChanged { get; set; }
+        public RelayCommand<SelectionChangedEventArgs> OnSelectionChangedCommand { get; set; }
 
 
         public QualityMV()
@@ -50,7 +53,22 @@ namespace Quality_Control.Forms.Quality.ModelView
             OnProductNameFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNameTextChangedFilter);
             OnProductNumberFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNumberTextChangedFilter);
             OnComboYearSelectionChanged = new RelayCommand<SelectionChangedEventArgs>(OnYearSelectionCommandExecuted);
+            OnSelectionChangedCommand = new RelayCommand<SelectionChangedEventArgs>(this.OnSelectionChangedCommandExecuted);
         }
+
+        internal void SetQualityDataMV(QualityDataMV qualityDataMV)
+        {
+            _qualityDataMV = qualityDataMV;
+        }
+
+        internal NavigationMV SetNavigationMV
+        {
+            set => _navigationMV = value;
+        }
+
+        internal bool Modified => (Quality.Any(x => x.Modified) || _qualityDataMV != null) && _qualityDataMV.Modified;
+
+        #region Events - RelayCommand
 
         protected void OnPropertyChanged(params string[] names)
         {
@@ -92,17 +110,25 @@ namespace Quality_Control.Forms.Quality.ModelView
             Filter();
         }
 
-        internal void SetQualityDataMV(QualityDataMV qualityDataMV)
+        public void OnSelectionChangedCommandExecuted(SelectionChangedEventArgs e)
         {
-            _qualityDataMV = qualityDataMV;
+            DataGrid grid = (DataGrid)e.Source;
+
+            var index = grid.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+
+            var item = grid.Items[index];
+            DataGridRow row = grid.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
+            if (row == null)
+            {
+                grid.ScrollIntoView(item);
+            }
         }
 
-        internal NavigationMV SetNavigationMV
-        {
-            set => _navigationMV = value;
-        }
-
-        internal bool Modified => (Quality.Any(x => x.Modified) || _qualityDataMV != null) && _qualityDataMV.Modified;
+        #endregion
 
         #region Filtering
 
@@ -206,6 +232,12 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         internal QualityModel GetCurrentQuality => Quality[_selectedIndex];
 
+        public DataRowView ActualQuality
+        {
+            private get => _actualRow;
+            set => _actualRow = value;
+        }
+
         public int DgRowIndex
         {
             get => _selectedIndex;
@@ -234,6 +266,7 @@ namespace Quality_Control.Forms.Quality.ModelView
                     nameof(IsTextBoxActive));
 
                 if (_qualityDataMV != null) _qualityDataMV.RefreshQualityData(model);
+                Refresh();
             }
         }
 
@@ -241,7 +274,8 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public void Refresh()
         {
-            _navigationMV.Refresh();
+            if (_navigationMV != null)
+                _navigationMV.Refresh();
         }
 
         public bool IsTextBoxActive { get; set; } = true;
@@ -304,7 +338,9 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public void DeleteAll()
         {
-            
+            if (ActualQuality == null) return;
+
+            _service.Delete(ActualQuality);
         }
     }
 }

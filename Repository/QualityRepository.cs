@@ -15,6 +15,7 @@ namespace Quality_Control.Repository
             "From LabBook.dbo.QualityControl q left join LabBook.dbo.Users u on q.login_id= u.id left join LabBook.dbo.CmbPaintType t on q.product_type_id= t.id " +
             "Where YEAR(q.production_date)=XXXX Order By q.number";
         private readonly string _allYearsQuery = "Select Distinct YEAR(production_date) as year from Labbook.dbo.QualityControl Order by YEAR(production_date)";
+        private readonly string _deleteQualityByIdQuery = "Delete From LabBook.dbo.QualityControl Where id=";
 
         public SortableObservableCollection<QualityModel> GetAllByYear(int year)
         {
@@ -109,6 +110,40 @@ namespace Quality_Control.Repository
             }
 
             return years;
+
+        }
+
+        public bool DeleteQualityById(long id)
+        {
+            bool result = true;
+            SqlConnection connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString());
+            SqlCommand cmd = new SqlCommand();
+
+            try
+            {
+                cmd.CommandText = _deleteQualityByIdQuery + id.ToString();
+                cmd.Connection = connection;
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                    "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                    "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return result;
 
         }
 

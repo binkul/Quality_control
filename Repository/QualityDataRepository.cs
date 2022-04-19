@@ -11,6 +11,7 @@ namespace Quality_Control.Repository
             "left join LabBook.dbo.QualityControl q on d.quality_id=q.id Where d.quality_id=XXXX Order by days_distance, d.quality_id";
         private readonly string _getFieldsToShow = "Select active_fields From LabBook.dbo.QualityControlFields Where labbook_id=";
         private readonly string _deleteQualityDataByIdQuery = "Delete From LabBook.dbo.QualityControlData Where id=";
+        private readonly string _deleteQualityDataByQualityIdQuery = "Delete From LabBook.dbo.QualityControlData Where quality_id=";
 
         public DataTable GetQualityDataByQualityId(long id)
         {
@@ -56,12 +57,12 @@ namespace Quality_Control.Repository
                 }
                 catch (SqlException ex)
                 {
-                    MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                    _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
                         "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                    _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
                         "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -83,12 +84,12 @@ namespace Quality_Control.Repository
             }
             catch (SqlException ex)
             {
-                MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
                     "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
                     "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
@@ -128,7 +129,43 @@ namespace Quality_Control.Repository
             }
             finally
             {
-                connection.Close();
+                if (connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+            return result;
+
+        }
+
+        public bool DeleteQualityDataByQualityId(long qualityId)
+        {
+            bool result = true;
+            SqlConnection connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString());
+            SqlCommand cmd = new SqlCommand();
+
+            try
+            {
+                cmd.CommandText = _deleteQualityDataByQualityIdQuery + qualityId.ToString();
+                cmd.Connection = connection;
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                    "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                    "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                    connection.Close();
             }
             return result;
 

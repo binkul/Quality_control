@@ -26,6 +26,8 @@
         <Convertors:DateTimeConverter x:Key="DateTimeConverter" />
         <Convertors:ColumnVisibilityConverter x:Key="ColumnVisibility" />
         <Convertors:IgnoreNewItemPlaceholderConverter x:Key="IgnoreNewItemConverter" />
+        <Convertors:NaviCurrentConverter x:Key="NaviCurrentConverter" />
+        <Convertors:NaviTotalConverter x:Key="NaviTotalConverter" />
         <Style x:Key="AllignColmnHeaderCenter" TargetType="DataGridColumnHeader">
             <Setter Property="SeparatorBrush" Value="WhiteSmoke" />
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -72,7 +74,7 @@
             <cmd:EventToCommand Command="{Binding OnClosingCommand}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <DockPanel Margin="0,0,0,0" LastChildFill="True">
+    <DockPanel Margin="0,0,0,0">
 
         <Ribbon DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">
             <RibbonTab Header="Kontrola jakości">
@@ -141,7 +143,7 @@
             </RibbonTab>
         </Ribbon>
         
-        <Grid DockPanel.Dock="Top" Background="#FFE5E5E5" VerticalAlignment="Top">
+        <Grid Background="#FFE5E5E5">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300" />
@@ -186,8 +188,14 @@
                       HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       ItemsSource="{Binding Quality}"
+                      SelectedItem="{Binding ActualQuality}"
                       SelectedIndex="{Binding DgRowIndex, Mode=TwoWay, FallbackValue=0}">
-                
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <cmd:EventToCommand Command="{Binding OnSelectionChangedCommand}" PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
                 <DataGrid.Columns>
                     
                     <DataGridTextColumn x:Name="ColNumber" Binding="{Binding Id}" Visibility="Collapsed" />
@@ -979,31 +987,37 @@
             
             <!-- Navigation -->
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="4" Grid.RowSpan="3" >
-                <Button  x:Name="BtnNaviLeftFirst" Height="20" Width="20" Tag="first" Margin="5,0,0,0" >
+                <Button  x:Name="BtnNaviLeftFirst" Height="20" Width="20" Tag="first" Margin="5,0,0,0" 
+                         Command="{Binding MoveFirst, Source={StaticResource navi}}">
                     <StackPanel Orientation="Horizontal" >
                         <Image Source="/img/arrow-left_first.png" Stretch="Fill" Height="13"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="BtnNaviLeft" Height="20" Width="20" Tag="left" Margin="1,0,0,0">
+                <Button x:Name="BtnNaviLeft" Height="20" Width="20" Tag="left" Margin="1,0,0,0"
+                        Command="{Binding MoveLeft, Source={StaticResource navi}}">
                     <StackPanel Orientation="Horizontal" >
                         <Image Source="/img/arrow-left.png" Stretch="Fill" Height="13"/>
                     </StackPanel>
                 </Button>
 
                 <TextBox x:Name="TxtNavieRec" Width="55" HorizontalAlignment="Left" Padding="0,2,0,0" FontSize="11" Height="20"
-                     FontWeight="SemiBold" IsReadOnly="True" Margin="1,0,0,0" />
+                     FontWeight="SemiBold" IsReadOnly="True" Margin="1,0,0,0" 
+                         Text="{Binding DgRowIndex, Source={StaticResource navi}, Mode=OneWay, Converter={StaticResource NaviCurrentConverter}}"/>
 
                 <Label x:Name="LblNavieRec" Height="20" Width="49" HorizontalAlignment="Left" FontSize="11" FontWeight="SemiBold" 
-                   Padding="0,3,0,0" Margin="1,0,0,0"/>
+                   Padding="0,3,0,0" Margin="1,0,0,0"
+                       Content="{Binding GetRowCount, Source={StaticResource navi}, Mode=OneWay, Converter={StaticResource NaviTotalConverter}}"/>
 
-                <Button x:Name="BtnNaviRight" HorizontalAlignment="Left" Height="20" Width="20" Tag="right" Margin="1,0,0,0">
+                <Button x:Name="BtnNaviRight" HorizontalAlignment="Left" Height="20" Width="20" Tag="right" Margin="1,0,0,0"
+                        Command="{Binding MoveRight, Source={StaticResource navi}}">
                     <StackPanel Orientation="Horizontal" >
                         <Image Source="/img/arrow-right.png" Stretch="Fill" Height="13"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="BtnNaviRightLast" HorizontalAlignment="Left" Height="20" Width="20" Tag="last" Margin="1,0,0,0">
+                <Button x:Name="BtnNaviRightLast" HorizontalAlignment="Left" Height="20" Width="20" Tag="last" Margin="1,0,0,0"
+                        Command="{Binding MoveLast, Source={StaticResource navi}}">
                     <StackPanel Orientation="Horizontal" >
                         <Image Source="/img/arrow-right_last.png" Stretch="Fill" Height="13"/>
                     </StackPanel>

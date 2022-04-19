@@ -45,7 +45,7 @@ namespace Quality_Control.Forms.Navigation
             }
         }
 
-        internal int DgRowIndex
+        public int DgRowIndex
         {
             get => ModelView != null ? ModelView.DgRowIndex : 0;
             set
@@ -57,7 +57,7 @@ namespace Quality_Control.Forms.Navigation
             }
         }
 
-        internal int GetRowCount => ModelView != null ? ModelView.GetRowCount : 0;
+        public int GetRowCount => ModelView != null ? ModelView.GetRowCount : 0;
 
         internal void Refresh()
         {

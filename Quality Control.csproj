@@ -83,6 +83,9 @@
     <Compile Include="Converters\ColumnVisibilityConverter.cs" />
     <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Converters\IgnoreNewItemPlaceholderConverter.cs" />
+    <Compile Include="Converters\IvalueConverter.cs" />
+    <Compile Include="Converters\NaviCurrentConverter.cs" />
+    <Compile Include="Converters\NaviTotalConverter.cs" />
     <Compile Include="Dto\UserDto.cs" />
     <Compile Include="Forms\Navigation\INavigation.cs" />
     <Compile Include="Forms\Navigation\NaviButtonFirst.cs" />
