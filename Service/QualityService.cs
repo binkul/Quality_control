@@ -44,5 +44,16 @@ namespace Quality_Control.Service
 
             return result;
         }
+
+        public QualityModel Save(QualityModel quality)
+        {
+
+            return quality;
+        }
+
+        public bool Update(QualityModel quality)
+        {
+            return _repository.Update(quality);
+        }
     }
 }

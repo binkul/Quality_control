@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Quality_Control.Forms.Quality"
         xmlns:Convertors="clr-namespace:Quality_Control.Converters"
-        xmlns:vm ="clr-namespace:Quality_Control.Forms.Quality.ModelView"
+        xmlns:vm="clr-namespace:Quality_Control.Forms.Quality.ModelView"
         xmlns:naviMV="clr-namespace:Quality_Control.Forms.Navigation"
+        xmlns:beh="clr-namespace:Quality_Control.Behaviors"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:cmd="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
@@ -170,7 +171,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </TextBox>
-                <TextBox x:Name="TxtFilterNname" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="1,0,0,5" 
+                <TextBox x:Name="TxtFilterNname" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="1,0,0,5"
                          Text="{Binding ProductName, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                          Width="{Binding ElementName=ColProductName, Path=ActualWidth}">
                     <i:Interaction.Triggers>
@@ -261,7 +262,11 @@
                 <DatePicker x:Name="DpPicker" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2,0,0,0"
                             SelectedDateFormat="Short"
                             IsEnabled="{Binding IsTextBoxActive}"
-                            Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" >
+                    <i:Interaction.Behaviors>
+                        <beh:DatePickerLostFocus />
+                    </i:Interaction.Behaviors>
+                </DatePicker>
                 <Label x:Name="LblProduct" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
                        Padding="10,1,5,5" Foreground="Red" 
                        Content="{Binding SelectedItem.ProductName, ElementName=DgQuality, Mode=OneWay}"/>

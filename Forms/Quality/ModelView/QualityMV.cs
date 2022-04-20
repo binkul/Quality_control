@@ -64,7 +64,18 @@ namespace Quality_Control.Forms.Quality.ModelView
             set => _navigationMV = value;
         }
 
-        internal bool Modified => (Quality.Any(x => x.Modified) || _qualityDataMV != null) && _qualityDataMV.Modified;
+        internal bool Modified => Quality.Any(x => x.Modified) || ModifiedData;
+
+        private bool ModifiedData
+        {
+            get
+            {
+                if (_qualityDataMV != null)
+                    return _qualityDataMV.Modified;
+                else
+                    return false;
+            }
+        }
 
         #region Events - RelayCommand
 
@@ -312,8 +323,41 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public void SaveAll()
         {
+            bool reload = false;
+
+            var qualities = FullQuality.Where(x => x.Modified == true).ToList();
+            foreach(QualityModel quality in qualities)
+            {
+                if (_service.Update(quality))
+                {
+                    quality.Modified = false;
+                    if (CheckQualityYear(quality)) reload = true;
+                }
+            }
 
             _qualityDataMV.Save();
+            if (reload) ReloadYears();
+        }
+
+        private void ReloadYears()
+        {
+            Years = _service.GetAllYears();
+            Year = Years.Count > 0 ? Years[Years.Count - 1] : -1;
+            OnPropertyChanged(nameof(Years), nameof(Year));
+        }
+
+        private bool CheckQualityYear(QualityModel quality)
+        {
+            bool result = false;
+
+            if (quality.ProductionDate.Year != Year)
+            {
+                _ = FullQuality.Remove(quality);
+                _ = Quality.Remove(quality);
+                if (!Years.Contains(quality.ProductionDate.Year)) result = true;
+            }
+
+            return result;
         }
 
         public void DeleteAll()

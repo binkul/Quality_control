@@ -75,6 +75,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Behaviors\DatePickerLostFocus.cs" />
     <Compile Include="Commons\IRepository.cs" />
     <Compile Include="Commons\RepositoryCommon.cs" />
     <Compile Include="Commons\SortableObservableCollection.cs" />

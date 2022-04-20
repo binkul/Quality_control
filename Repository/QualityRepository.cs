@@ -16,6 +16,8 @@ namespace Quality_Control.Repository
             "Where YEAR(q.production_date)=XXXX Order By q.number";
         private readonly string _allYearsQuery = "Select Distinct YEAR(production_date) as year from Labbook.dbo.QualityControl Order by YEAR(production_date)";
         private readonly string _deleteQualityByIdQuery = "Delete From LabBook.dbo.QualityControl Where id=";
+        private readonly string _qualityUpdateQuery = "Update LabBook.dbo.QualityControl Set production_date=@production_date, number=@number, product_name=@product_name, product_index=@product_index, " +
+            "labbook_id=@labbook_id, product_type_id=@production_type_id, remarks=@remarks, active_fields=@active_fields, login_id=@login_id Where id = @id";
 
         public SortableObservableCollection<QualityModel> GetAllByYear(int year)
         {
@@ -141,11 +143,70 @@ namespace Quality_Control.Repository
             }
             finally
             {
-                connection.Close();
+                if (connection.State == ConnectionState.Open)
+                    connection.Close();
             }
             return result;
 
         }
 
+        public QualityModel Save(QualityModel quality)
+        {
+
+            return quality;
+        }
+
+        public bool Update(QualityModel quality)
+        {
+            bool result = true;
+            SqlConnection connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString());
+            SqlCommand cmd = new SqlCommand();
+
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = _qualityUpdateQuery;
+                cmd.Parameters.AddWithValue("@production_date", quality.ProductionDate);
+                cmd.Parameters.AddWithValue("@number", quality.Number);
+                cmd.Parameters.AddWithValue("@product_name", quality.ProductName);
+                if (!string.IsNullOrEmpty(quality.ProductIndex))
+                    cmd.Parameters.AddWithValue("@product_index", quality.ProductIndex);
+                else
+                    cmd.Parameters.AddWithValue("@product_index", DBNull.Value);
+                cmd.Parameters.AddWithValue("@labbook_id", quality.LabBookId);
+                cmd.Parameters.AddWithValue("@production_type_id", quality.ProductTypeId);
+                if (!string.IsNullOrEmpty(quality.Remarks))
+                    cmd.Parameters.AddWithValue("@remarks", quality.Remarks);
+                else
+                    cmd.Parameters.AddWithValue("@remarks", DBNull.Value);
+                if (!string.IsNullOrEmpty(quality.ActiveDataFields))
+                    cmd.Parameters.AddWithValue("@active_fields", quality.ActiveDataFields);
+                else
+                    cmd.Parameters.AddWithValue("@active_fields", DBNull.Value);
+                cmd.Parameters.AddWithValue("@login_id", quality.LabBookId);
+                cmd.Parameters.AddWithValue("@id", quality.Id);
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                    "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                    "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+            return result;
+        }
     }
 }
