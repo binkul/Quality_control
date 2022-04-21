@@ -64,7 +64,9 @@ namespace Quality_Control.Forms.Quality.ModelView
             set => _navigationMV = value;
         }
 
-        internal bool Modified => Quality.Any(x => x.Modified) || ModifiedData;
+        internal bool Modified => ModifiedQuality || ModifiedData;
+
+        private bool ModifiedQuality => Quality.Any(x => x.Modified);
 
         private bool ModifiedData
         {
@@ -114,6 +116,11 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         private void OnYearSelectionCommandExecuted(SelectionChangedEventArgs e)
         {
+            SaveDataQuality();
+            if (SaveQuality())
+            {
+                ReloadYears();
+            }
             FullQuality = _service.GetAllQuality(Year);
             Quality = FullQuality;
             Filter();
@@ -321,12 +328,13 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
-        public void SaveAll()
+        public bool SaveQuality()
         {
+            if (!ModifiedQuality) return false;
             bool reload = false;
 
-            var qualities = FullQuality.Where(x => x.Modified == true).ToList();
-            foreach(QualityModel quality in qualities)
+            List<QualityModel> qualities = FullQuality.Where(x => x.Modified == true).ToList();
+            foreach (QualityModel quality in qualities)
             {
                 if (_service.Update(quality))
                 {
@@ -334,6 +342,19 @@ namespace Quality_Control.Forms.Quality.ModelView
                     if (CheckQualityYear(quality)) reload = true;
                 }
             }
+            return reload;
+        }
+
+        public void SaveDataQuality()
+        {
+            if (ModifiedData)
+                _qualityDataMV.Save();
+        }
+
+        public void SaveAll()
+        {
+            bool reload = SaveQuality();
+            SaveDataQuality();
 
             _qualityDataMV.Save();
             if (reload) ReloadYears();
@@ -341,8 +362,10 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         private void ReloadYears()
         {
+            int tmpYear = Year;
             Years = _service.GetAllYears();
-            Year = Years.Count > 0 ? Years[Years.Count - 1] : -1;
+            Year = Years.Contains(tmpYear) ? tmpYear : Years.Count > 0 ? Years[Years.Count - 1] : -1;
+
             OnPropertyChanged(nameof(Years), nameof(Year));
         }
 
@@ -354,7 +377,7 @@ namespace Quality_Control.Forms.Quality.ModelView
             {
                 _ = FullQuality.Remove(quality);
                 _ = Quality.Remove(quality);
-                if (!Years.Contains(quality.ProductionDate.Year)) result = true;
+                if (FullQuality.Count == 0 || !Years.Contains(quality.ProductionDate.Year)) result = true;
             }
 
             return result;

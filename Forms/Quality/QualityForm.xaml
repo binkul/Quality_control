@@ -147,7 +147,7 @@
         <Grid Background="#FFE5E5E5">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="340" />
                 <ColumnDefinition Width="10" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
@@ -227,14 +227,14 @@
                     </DataGridTemplateColumn>
 
                     <!-- Column Number/year -->
-                    <DataGridTextColumn x:Name="ColYearNumber" Header="Nr" IsReadOnly="True" Width="30*" CanUserSort="False"
+                    <DataGridTextColumn x:Name="ColYearNumber" Header="Nr" IsReadOnly="True" Width="0.2*" CanUserSort="False"
                                         HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
                                         ElementStyle="{StaticResource AllignCellCenter}"
                                         Binding="{Binding YearNumber}">
                     </DataGridTextColumn>
                     
                     <!-- column product name -->
-                    <DataGridTextColumn x:Name="ColProductName" Header="Nazwa" IsReadOnly="True" Width="70*" CanUserSort="False"
+                    <DataGridTextColumn x:Name="ColProductName" Header="Nazwa" IsReadOnly="True" Width="0.8*" CanUserSort="False"
                                         HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
                                         ElementStyle="{StaticResource AllignCellLeft}"
                                         Binding="{Binding ProductName}">
