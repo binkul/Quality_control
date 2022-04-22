@@ -232,7 +232,7 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public QualityModel ActualQuality
         {
-            private get => _actualRow;
+            internal get => _actualRow;
             set => _actualRow = value;
         }
 

@@ -37,7 +37,7 @@ namespace Quality_Control.Forms.Quality.Command
 
         public void Execute(object parameter)
         {
-            _modelView.DeleteQualityData();
+            _modelView.Delete();
         }
 
     }

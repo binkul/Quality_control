@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -18,37 +17,36 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         private QualityMV _qualityMV;
         private readonly QualityDataService _service = new QualityDataService();
-        private readonly DataTable _qualityDataTable;
         private DataRowView _actualDataGridRow;
-        private int _dataGridRowIndex = 0;
         public event PropertyChangedEventHandler PropertyChanged;
-        public bool Modified { get; set; } = false;
-        public DataView QualityDataView { get; }
         public RelayCommand<InitializingNewItemEventArgs> OnInitializingNewQualityDataCommand { get; set; }
 
         public QualityDataMV()
         {
             OnInitializingNewQualityDataCommand = new RelayCommand<InitializingNewItemEventArgs>(OnInitializingNewQualityDataCommandExecuted);
-            _qualityDataTable = _service.GetQualityDataById(-1);
-            _qualityDataTable.ColumnChanged += QualityDataTable_ColumnChanged;
-            QualityDataView = new DataView(_qualityDataTable);
         }
 
         public int DataGriddRowIndex
         {
-            get => _dataGridRowIndex;
-            set => _dataGridRowIndex = value;
+            get => _service.DataGridRowIndex;
+            set => _service.DataGridRowIndex = value;
+        }
+
+        public bool Modified
+        {
+            get => _service.Modified;
+            set => _service.Modified = value;
+        }
+
+        public DataView QualityDataView
+        {
+            get => _service.QualityDataView;
         }
 
         public DataRowView ActualDataGridRow
         {
             get => _actualDataGridRow;
             set => _actualDataGridRow = value;
-        }
-
-        private void QualityDataTable_ColumnChanged(object sender, DataColumnChangeEventArgs e)
-        {
-            Modified = true;
         }
 
         protected void OnPropertyChanged(params string[] names)
@@ -60,23 +58,16 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
-        public List<string> GetActiveFields { get; } = new List<string>() { "measure_date", "temp", "density", "pH", "vis_1", "vis_5", "vis_20", "disc", "comments" };
+        public List<string> GetActiveFields
+        {
+            get => _service.ActiveFields;
+        }
 
         public void SetQualityMV(QualityMV qualityMV) => _qualityMV = qualityMV;
 
         public void RefreshQualityData(QualityModel quality)
         {
-            Save();
-            if (quality != null)
-            {
-                _service.RefreshQualityData(quality.Id, _qualityDataTable);
-                GetActiveFields.Clear();
-                GetActiveFields.AddRange(_service.GetActiveFields(quality));
-            }
-            else
-            {
-                _service.RefreshQualityData(-1, _qualityDataTable);
-            }
+            _service.RefreshQualityData(quality);
             OnPropertyChanged(nameof(GetActiveFields));
         }
 
@@ -102,22 +93,26 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public void Save()
         {
-
-            Modified = false;
+            _ = _service.Save(_qualityMV.ActualQuality.Id);
         }
 
-        public void DeleteQualityData()
+        public void Delete()
         {
-            if (ActualDataGridRow == null || ActualDataGridRow.IsNew) return;
+            if (ActualDataGridRow == null || ActualDataGridRow.IsNew)
+                return;
+            else
+                _service.Delete(Convert.ToInt64(ActualDataGridRow.Row["id"]));
 
-            if (MessageBox.Show("Czy usunąć zaznaczony rekord?", "Usuwanie", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-            {
-                long id = Convert.ToInt64(ActualDataGridRow.Row["id"]);
-                _service.Delete(id);
-            }
 
-            if (DataGriddRowIndex < QualityDataView.Count)
-                QualityDataView.Delete(DataGriddRowIndex);
+
+            //if (MessageBox.Show("Czy usunąć zaznaczony rekord?", "Usuwanie", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            //{
+            //    long id = Convert.ToInt64(ActualDataGridRow.Row["id"]);
+            //    _service.Delete(id);
+            //}
+
+            //if (DataGriddRowIndex < QualityDataView.Count)
+            //    QualityDataView.Delete(DataGriddRowIndex);
         }
     }
 }
