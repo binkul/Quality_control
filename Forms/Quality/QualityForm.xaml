@@ -80,7 +80,8 @@
         <Ribbon DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">
             <RibbonTab Header="Kontrola jakości">
                 <RibbonGroup Header="Wyroby" FontSize="10">
-                    <RibbonButton Label="Nowy" LargeImageSource="/Img/New.ico" FontWeight="Regular">
+                    <RibbonButton Label="Nowy" LargeImageSource="/Img/New.ico" FontWeight="Regular"
+                                  Command="{Binding AddNewButton}">
                         <RibbonButton.ToolTip >
                             <ToolTip Background="Yellow">
                                 <DockPanel Width="Auto" Height="Auto" Background="Yellow" >

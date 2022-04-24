@@ -1,6 +1,7 @@
 ﻿using Quality_Control.Commons;
 using Quality_Control.Forms.Quality.Model;
 using Quality_Control.Repository;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
@@ -10,10 +11,32 @@ namespace Quality_Control.Service
     public class QualityService
     {
         private readonly QualityRepository _repository;
+        private int _year = DateTime.Today.Year;
+        private List<int> _years;
 
         public QualityService()
         {
             _repository = new QualityRepository();
+            Years = GetAllYears();
+        }
+
+        public List<int> Years
+        {
+            get => _years;
+            private set => _years = value;
+        }
+
+        public int Year
+        {
+            get => _year;
+            set => _year = value;
+        }
+
+        public void ReloadYears()
+        {
+            int tmpYear = Year;
+            Years = GetAllYears();
+            Year = Years.Contains(tmpYear) ? tmpYear : Years.Count > 0 ? Years[Years.Count - 1] : -1;
         }
 
         public SortableObservableCollection<QualityModel> GetAllQuality(int year)

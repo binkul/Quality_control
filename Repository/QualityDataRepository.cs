@@ -176,7 +176,7 @@ namespace Quality_Control.Repository
         {
             bool result = true;
             StringBuilder kwerStart = new StringBuilder("Insert Into LabBook.dbo.QualityControlData(");
-            StringBuilder kwerEnd = new StringBuilder(" Values(");
+            StringBuilder kwerEnd = new StringBuilder(") Values(");
             SqlConnection connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString());
             SqlCommand cmd = new SqlCommand();
 
@@ -198,11 +198,14 @@ namespace Quality_Control.Repository
                         index++;
                     }
                 }
-                kwerStart.Append("quality_id)");
-                kwerEnd.Append("@quality_id)");
+                kwerStart.Remove(kwerStart.Length - 2, 2);
+                kwerEnd.Remove(kwerEnd.Length - 2, 2);
+
+                //kwerStart.Append("quality_id)");
+                kwerEnd.Append(")");
 
                 cmd.CommandText = kwerStart.ToString() + kwerEnd.ToString();
-                cmd.Parameters.AddWithValue("@quality_id", row["quality_id"]);
+                //cmd.Parameters.AddWithValue("@quality_id", row["quality_id"]);
                 cmd.Connection = connection;
 
                 connection.Open();
@@ -242,7 +245,7 @@ namespace Quality_Control.Repository
                 foreach (DataColumn column in row.Table.Columns)
                 {
                     string field = column.ColumnName;
-                    if (field != "days_distance" && field != "quality_id")
+                    if (field != "days_distance" && field != "quality_id" && field != "id")
                     {
                         kwerStart.Append(field);
                         kwerStart.Append("=");
@@ -256,7 +259,7 @@ namespace Quality_Control.Repository
                 }
 
                 kwerStart.Remove(kwerStart.Length - 2, 2);
-                cmd.CommandText = kwerStart.ToString() + kwerEnd.ToString(); ;
+                cmd.CommandText = kwerStart.ToString() + kwerEnd.ToString();
                 cmd.Parameters.AddWithValue("@id", row["id"]);
                 cmd.Connection = connection;
 

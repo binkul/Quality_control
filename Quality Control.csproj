@@ -87,12 +87,17 @@
     <Compile Include="Converters\NaviCurrentConverter.cs" />
     <Compile Include="Converters\NaviTotalConverter.cs" />
     <Compile Include="Dto\UserDto.cs" />
+    <Compile Include="Forms\AddNew\AddNewForm.xaml.cs">
+      <DependentUpon>AddNewForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AddNew\ModelView\AddNewMV.cs" />
     <Compile Include="Forms\Navigation\INavigation.cs" />
     <Compile Include="Forms\Navigation\NaviButtonFirst.cs" />
     <Compile Include="Forms\Navigation\NaviButtonLast.cs" />
     <Compile Include="Forms\Navigation\NaviButtonLeft.cs" />
     <Compile Include="Forms\Navigation\NaviButtonRight.cs" />
     <Compile Include="Forms\Navigation\NavigationMV.cs" />
+    <Compile Include="Forms\Quality\Command\AddNewButton.cs" />
     <Compile Include="Forms\Quality\Command\DeleteButton.cs" />
     <Compile Include="Forms\Quality\Command\DeleteQualityDataButton.cs" />
     <Compile Include="Forms\Quality\Command\SaveButton.cs" />
@@ -151,6 +156,10 @@
     <Resource Include="Img\qc-icon-7.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Forms\AddNew\AddNewForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\Login\LoginForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -203,5 +212,9 @@
   <ItemGroup>
     <Resource Include="Img\arrow-right_last.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Forms\AddNew\Ok-icon.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

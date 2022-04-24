@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using Quality_Control.Commons;
+using Quality_Control.Forms.AddNew;
 using Quality_Control.Forms.Navigation;
 using Quality_Control.Forms.Quality.Command;
 using Quality_Control.Forms.Quality.Model;
@@ -19,6 +20,7 @@ namespace Quality_Control.Forms.Quality.ModelView
     {
         private ICommand _saveButton;
         private ICommand _deleteButton;
+        private ICommand _addNewButton;
 
         private readonly double _startLeftPosition = 32;
         private readonly WindowData _windowData = WindowSettings.Read();
@@ -30,13 +32,11 @@ namespace Quality_Control.Forms.Quality.ModelView
         private string _remarks;
         private string _productName = "";
         private string _productNumber = "";
-        private int _year = DateTime.Today.Year;
         private DateTime _productionDate;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public SortableObservableCollection<QualityModel> FullQuality { get; private set; }
         public SortableObservableCollection<QualityModel> Quality { get; private set; }
-        public List<int> Years { get; private set; }
         public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNameFilterTextChanged { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNumberFilterTextChanged { get; set; }
@@ -47,7 +47,7 @@ namespace Quality_Control.Forms.Quality.ModelView
         {
             FullQuality = _service.GetAllQuality(DateTime.Today.Year);
             Quality = FullQuality;
-            Years = _service.GetAllYears();
+            //Years = _service.GetAllYears();
             OnClosingCommand = new RelayCommand<CancelEventArgs>(this.OnClosingCommandExecuted);
             OnProductNameFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNameTextChangedFilter);
             OnProductNumberFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNumberTextChangedFilter);
@@ -182,7 +182,9 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         #endregion
 
-        #region Current
+        #region Form dimension and position
+
+        public Thickness TxtNumberLeftPosition => new Thickness(_startLeftPosition, 0, 0, 5);
 
         public double FormXpos
         {
@@ -224,6 +226,10 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
+        #endregion
+
+        #region Current
+
         public bool IsFilterOn => ProductName.Length > 0 || ProductNumber.Length > 0;
 
         public bool IsAnyQuality => Quality.Count > 0;
@@ -235,6 +241,45 @@ namespace Quality_Control.Forms.Quality.ModelView
             internal get => _actualRow;
             set => _actualRow = value;
         }
+
+        public bool IsTextBoxActive { get; set; } = true;
+
+        public string Remarks
+        {
+            get => _remarks;
+            set
+            {
+                _remarks = value;
+                Quality[_selectedIndex].Remarks = _remarks;
+                Quality[_selectedIndex].Modified = true;
+            }
+        }
+
+        public DateTime ProductionDate
+        {
+            get => _productionDate;
+            set
+            {
+                _productionDate = value;
+                Quality[_selectedIndex].ProductionDate = _productionDate;
+                Quality[_selectedIndex].Modified = true;
+            }
+        }
+
+        public int Year
+        {
+            get => _service.Year;
+            set => _service.Year = value;
+        }
+
+        public List<int> Years
+        {
+            get => _service.Years;
+        }
+
+        #endregion
+
+        #region Navigation
 
         public int DgRowIndex
         {
@@ -276,39 +321,7 @@ namespace Quality_Control.Forms.Quality.ModelView
                 _navigationMV.Refresh();
         }
 
-        public bool IsTextBoxActive { get; set; } = true;
-
-        public string Remarks
-        {
-            get => _remarks;
-            set
-            {
-                _remarks = value;
-                Quality[_selectedIndex].Remarks = _remarks;
-                Quality[_selectedIndex].Modified = true;
-            }
-        }
-
-        public DateTime ProductionDate
-        {
-            get => _productionDate;
-            set
-            {
-                _productionDate = value;
-                Quality[_selectedIndex].ProductionDate = _productionDate;
-                Quality[_selectedIndex].Modified = true;
-            }
-        }
-
-        public int Year
-        {
-            get => _year;
-            set => _year = value;
-        }
-
         #endregion
-
-        public Thickness TxtNumberLeftPosition => new Thickness(_startLeftPosition, 0, 0, 5);
 
         public ICommand SaveButton
         {
@@ -325,6 +338,15 @@ namespace Quality_Control.Forms.Quality.ModelView
             {
                 if (_deleteButton == null) _deleteButton = new DeleteButton(this);
                 return _deleteButton;
+            }
+        }
+
+        public ICommand AddNewButton
+        {
+            get
+            {
+                if (_addNewButton == null) _addNewButton = new AddNewButton(this);
+                return _addNewButton;
             }
         }
 
@@ -362,10 +384,7 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         private void ReloadYears()
         {
-            int tmpYear = Year;
-            Years = _service.GetAllYears();
-            Year = Years.Contains(tmpYear) ? tmpYear : Years.Count > 0 ? Years[Years.Count - 1] : -1;
-
+            _service.ReloadYears();
             OnPropertyChanged(nameof(Years), nameof(Year));
         }
 
@@ -394,6 +413,12 @@ namespace Quality_Control.Forms.Quality.ModelView
                 _ = FullQuality.Remove(quality);
                 _ = Quality.Remove(quality);
             }
+        }
+
+        public void AddNew()
+        {
+            AddNewForm form = new AddNewForm();
+            _ = form.ShowDialog();
         }
     }
 }

@@ -77,6 +77,8 @@ namespace Quality_Control.Service
 
         public void RefreshQualityData(QualityModel quality)
         {
+            if (quality == null) return;
+
             Save(quality.Id);
             if (quality != null)
             {
