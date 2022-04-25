@@ -22,6 +22,13 @@ namespace Quality_Control.Forms.AddNew
         public AddNewForm()
         {
             InitializeComponent();
+            Height = SystemParameters.PrimaryScreenHeight - 100;
+            if (SystemParameters.PrimaryScreenWidth <= 800)
+                Width = 600;
+            else if (SystemParameters.PrimaryScreenWidth > 800 && SystemParameters.PrimaryScreenWidth <= 1000)
+                Width = 800;
+            else
+                Width = 1000;
         }
     }
 }
