@@ -47,7 +47,6 @@ namespace Quality_Control.Forms.Quality.ModelView
         {
             FullQuality = _service.GetAllQuality(DateTime.Today.Year);
             Quality = FullQuality;
-            //Years = _service.GetAllYears();
             OnClosingCommand = new RelayCommand<CancelEventArgs>(this.OnClosingCommandExecuted);
             OnProductNameFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNameTextChangedFilter);
             OnProductNumberFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNumberTextChangedFilter);
@@ -159,7 +158,7 @@ namespace Quality_Control.Forms.Quality.ModelView
 
                 int number = ProductNumber.Length > 0 ? Convert.ToInt32(ProductNumber) : -1;
 
-                var result = FullQuality
+                List<QualityModel> result = FullQuality
                     .Where(x => x.ProductName.ToLower().Contains(ProductName))
                     .Where(x => x.Number >= number)
                     .ToList();

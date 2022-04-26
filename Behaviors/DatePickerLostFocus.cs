@@ -5,7 +5,7 @@ using System.Windows.Interactivity;
 
 namespace Quality_Control.Behaviors
 {
-    public class DatePickerLostFocus : Behavior<DatePicker>
+    public class DatePickerLostFocus : Behavior<Control>
     {
         protected override void OnAttached()
         {
@@ -27,7 +27,7 @@ namespace Quality_Control.Behaviors
 
         private void AssociatedObject_KeyDown(object sender, KeyEventArgs e)
         {
-            if (sender is DatePicker)
+            if (sender is Control)
             {
                 if (e.Key == Key.Enter)
                 {

@@ -1,10 +1,12 @@
-﻿using Quality_Control.Commons;
+﻿using GalaSoft.MvvmLight.Command;
+using Quality_Control.Commons;
 using Quality_Control.Forms.AddNew.Model;
 using Quality_Control.Forms.Navigation;
 using Quality_Control.Service;
 using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Quality_Control.Forms.AddNew.ModelView
 {
@@ -20,6 +22,15 @@ namespace Quality_Control.Forms.AddNew.ModelView
         private string _filterIndex = "";
         private string _filterName = "";
         public event PropertyChangedEventHandler PropertyChanged;
+        public RelayCommand<TextChangedEventArgs> OnProductNameFilterTextChanged { get; set; }
+        public RelayCommand<TextChangedEventArgs> OnProductIndexFilterTextChanged { get; set; }
+
+
+        public AddNewMV()
+        {
+            OnProductNameFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNameTextChangedFilter);
+            OnProductIndexFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductIndexTextChangedFilter);
+        }
 
         protected void OnPropertyChanged(params string[] names)
         {
@@ -30,7 +41,7 @@ namespace Quality_Control.Forms.AddNew.ModelView
             }
         }
 
-        public SortableObservableCollection<ProductModel> Products => _service.Products;
+        public SortableObservableCollection<ProductModel> Products => _service.FilteredProducts;
 
         internal NavigationMV SetNavigationMV
         {
@@ -63,7 +74,7 @@ namespace Quality_Control.Forms.AddNew.ModelView
 
         #region Navigation
 
-        public int GetRowCount => _service.Products.Count;
+        public int GetRowCount => _service.FilteredProducts.Count;
 
         public int DgRowIndex
         {
@@ -98,6 +109,19 @@ namespace Quality_Control.Forms.AddNew.ModelView
             set => _filterIndex = value;
         }
 
+        public void OnProductNameTextChangedFilter(TextChangedEventArgs e)
+        {
+            _service.Filter(IndexFilterTxt, FilterNameTxt);
+            OnPropertyChanged(nameof(Products));
+            Refresh();
+        }
+
+        public void OnProductIndexTextChangedFilter(TextChangedEventArgs e)
+        {
+            _service.Filter(IndexFilterTxt, FilterNameTxt);
+            OnPropertyChanged(nameof(Products));
+            Refresh();
+        }
 
         #endregion
     }

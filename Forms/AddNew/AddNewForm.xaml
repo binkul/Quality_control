@@ -67,7 +67,7 @@
         <!-- Production number and date -->    
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
             <Label Content="Nr produkcji:" FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="Black" />
-            <TextBox x:Name="Number" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Width="100" 
+            <TextBox FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Width="100" 
                      PreviewTextInput="Number_PreviewTextInput"
                      Text="{Binding ProductNumber, Mode=OneWayToSource, UpdateSourceTrigger=LostFocus, FallbackValue=0}" >
                 <i:Interaction.Behaviors>
@@ -75,7 +75,7 @@
                 </i:Interaction.Behaviors>
             </TextBox>
             <Label Content="Data produkcji:" FontWeight="Bold" FontSize="14" Margin="100,0,0,0" VerticalAlignment="Center" Foreground="Black" />
-            <DatePicker x:Name="DpPicker" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Margin="10,0,0,0"
+            <DatePicker FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Margin="10,0,0,0"
                         SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" 
                         Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" >
                 <i:Interaction.Behaviors>
@@ -95,13 +95,17 @@
             <Label Content="Wyroby" FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="Blue" />
         </StackPanel>
 
-        <!-- filtering -->
+        <!-- Filtering -->
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" >
             <TextBox x:Name="IndexFilter" FontSize="14" VerticalAlignment="Bottom"
-                     PreviewTextInput="Number_PreviewTextInput"
                      Margin="{Binding TxtIndexLeftPosition}"
                      Text="{Binding IndexFilterTxt, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                      Width="{Binding ElementName=ColIndex, Path=ActualWidth}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <cmd:EventToCommand Command="{Binding OnProductIndexFilterTextChanged}" PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <i:Interaction.Behaviors>
                     <beh:TextBooxLostFocus/>
                 </i:Interaction.Behaviors>
@@ -109,6 +113,11 @@
             <TextBox x:Name="nameFilter" FontSize="14" VerticalAlignment="Bottom" Margin="1,0,0,5" 
                      Text="{Binding FilterNameTxt, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                      Width="{Binding ElementName=ColName, Path=ActualWidth}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <cmd:EventToCommand Command="{Binding OnProductNameFilterTextChanged}" PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <i:Interaction.Behaviors>
                     <beh:TextBooxLostFocus/>
                 </i:Interaction.Behaviors>

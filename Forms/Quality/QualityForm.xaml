@@ -172,7 +172,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <i:Interaction.Behaviors>
-                        <beh:TextBooxLostFocus/>
+                        <beh:DatePickerLostFocus/>
                     </i:Interaction.Behaviors>
                 </TextBox>
                 <TextBox x:Name="TxtFilterNname" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="1,0,0,5"
@@ -184,7 +184,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <i:Interaction.Behaviors>
-                        <beh:TextBooxLostFocus/>
+                        <beh:DatePickerLostFocus/>
                     </i:Interaction.Behaviors>
                 </TextBox>
             </StackPanel>
@@ -271,7 +271,7 @@
                             IsEnabled="{Binding IsTextBoxActive}"
                             Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" >
                     <i:Interaction.Behaviors>
-                        <beh:TextBooxLostFocus />
+                        <beh:DatePickerLostFocus />
                     </i:Interaction.Behaviors>
                 </DatePicker>
                 <Label x:Name="LblProduct" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
