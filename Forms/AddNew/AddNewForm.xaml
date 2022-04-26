@@ -5,13 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:Quality_Control.Forms.AddNew"
+        xmlns:Convertors="clr-namespace:Quality_Control.Converters"
+        xmlns:naviMV="clr-namespace:Quality_Control.Forms.Navigation"
+        xmlns:beh="clr-namespace:Quality_Control.Behaviors"
         xmlns:vm="clr-namespace:Quality_Control.Forms.AddNew.ModelView"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:cmd="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
-        Title="Nowa produkcja" Height="600" Width="1000" Icon="Ok-icon.png" WindowStartupLocation="CenterScreen">
+        Title="Nowa produkcja" Height="600" Width="800" Icon="Ok-icon.png" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <vm:AddNewMV />
     </Window.DataContext>
     <Window.Resources>
+        <naviMV:NavigationMV x:Key="navi" />
+        <Convertors:NaviCurrentConverter x:Key="NaviCurrentConverter" />
+        <Convertors:NaviTotalConverter x:Key="NaviTotalConverter" />
         <Style x:Key="AllignColmnHeaderCenter" TargetType="DataGridColumnHeader">
             <Setter Property="SeparatorBrush" Value="WhiteSmoke" />
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -19,6 +27,21 @@
             <Setter Property="FontSize" Value="13" />
             <Setter Property="Height" Value="25" />
         </Style>
+        <Style x:Key="AllignCellCenter" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0,0,0,0" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+        <Style x:Key="AllignCellLeft" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="3,0,0,0" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+        <SolidColorBrush x:Key="DataGridBorderColor" Color="#FFB1AEAE"/>
     </Window.Resources>
     
     <Grid Background="#FFE5E5E5">
@@ -34,19 +57,31 @@
             <RowDefinition Height="35" />
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
+            <RowDefinition Height="25" />
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
             <Label Content="Informacje o produkcji" FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="Blue" />
         </StackPanel>
 
-            
+        <!-- Production number and date -->    
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
             <Label Content="Nr produkcji:" FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="Black" />
-            <TextBox x:Name="Number" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Width="100" />
+            <TextBox x:Name="Number" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Width="100" 
+                     PreviewTextInput="Number_PreviewTextInput"
+                     Text="{Binding ProductNumber, Mode=OneWayToSource, UpdateSourceTrigger=LostFocus, FallbackValue=0}" >
+                <i:Interaction.Behaviors>
+                    <beh:TextBooxLostFocus />
+                </i:Interaction.Behaviors>
+            </TextBox>
             <Label Content="Data produkcji:" FontWeight="Bold" FontSize="14" Margin="100,0,0,0" VerticalAlignment="Center" Foreground="Black" />
             <DatePicker x:Name="DpPicker" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Margin="10,0,0,0"
-                        SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" />
+                        SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" 
+                        Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" >
+                <i:Interaction.Behaviors>
+                    <beh:TextBooxLostFocus />
+                </i:Interaction.Behaviors>
+            </DatePicker>
         </StackPanel>
         
         <!-- Border around 'Informacje o produkcji' and Nr produkcji  -->
@@ -60,17 +95,42 @@
             <Label Content="Wyroby" FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="Blue" />
         </StackPanel>
 
+        <!-- filtering -->
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" >
-            <TextBox x:Name="IndexFilter" FontSize="14" Margin="5,0,0,0" VerticalAlignment="Center" />
-            <TextBox x:Name="nameFilter" FontSize="14" Margin="2,0,0,0" VerticalAlignment="Center" />
+            <TextBox x:Name="IndexFilter" FontSize="14" VerticalAlignment="Bottom"
+                     PreviewTextInput="Number_PreviewTextInput"
+                     Margin="{Binding TxtIndexLeftPosition}"
+                     Text="{Binding IndexFilterTxt, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                     Width="{Binding ElementName=ColIndex, Path=ActualWidth}">
+                <i:Interaction.Behaviors>
+                    <beh:TextBooxLostFocus/>
+                </i:Interaction.Behaviors>
+            </TextBox>
+            <TextBox x:Name="nameFilter" FontSize="14" VerticalAlignment="Bottom" Margin="1,0,0,5" 
+                     Text="{Binding FilterNameTxt, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                     Width="{Binding ElementName=ColName, Path=ActualWidth}">
+                <i:Interaction.Behaviors>
+                    <beh:TextBooxLostFocus/>
+                </i:Interaction.Behaviors>
+            </TextBox>
         </StackPanel>
 
-        <DataGrid x:Name="DgQuality" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Margin="2,2,2,2" AutoGenerateColumns="False" 
-                      ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow" IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
-                      CanUserAddRows="False"  CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column" IsReadOnly="True" >
+        <!-- Main DataGrid -->
+        <DataGrid x:Name="DgProduct" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Margin="2,2,2,2" AutoGenerateColumns="False" 
+                  ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow" IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
+                  CanUserAddRows="False"  CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column" IsReadOnly="True" 
+                  HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
+                  VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
+                  ItemsSource="{Binding Products}"
+                  SelectedItem="{Binding ActualProduct, Mode=OneWayToSource}"
+                  SelectedIndex="{Binding DgRowIndex, Mode=TwoWay, FallbackValue=0}" >
 
             <DataGrid.Columns>
-                
+
+                <DataGridTextColumn Binding="{Binding Id}" Visibility="Collapsed" />
+                <DataGridTextColumn Binding="{Binding LabBookId}" Visibility="Collapsed" />
+                <DataGridTextColumn Binding="{Binding TypeId}" Visibility="Collapsed" />
+
                 <!-- Arrow selector -->
                 <DataGridTemplateColumn x:Name="ColStatus" HeaderStyle="{StaticResource AllignColmnHeaderCenter}" 
                                                         IsReadOnly="True" CanUserSort="False" CanUserResize="False"
@@ -91,9 +151,24 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
+                <!-- Index column -->
+                <DataGridTextColumn x:Name="ColIndex" Header="Nr" IsReadOnly="True" Width="0.2*" CanUserSort="False"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}"
+                                        Binding="{Binding Index}">
+                </DataGridTextColumn>
+
+                <!-- name column -->
+                <DataGridTextColumn x:Name="ColName" Header="Nazwa" IsReadOnly="True" Width="0.9*" CanUserSort="False"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellLeft}"
+                                        Binding="{Binding Name}">
+                </DataGridTextColumn>
+
             </DataGrid.Columns>
         </DataGrid>
 
+        <!-- Accept and Cancel button -->
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Center">
             <Button x:Name="AcceptButton" Content="Ok" Width="70" FontSize="14" FontWeight="Bold" Foreground="Blue" Margin="0,0,10,0"/>
             <Button x:Name="CancelButton" Content="Anuluj" Width="70" FontSize="14" FontWeight="Bold" Foreground="Red" Margin="0,0,5,0"/>
@@ -106,6 +181,46 @@
             </Border.BorderBrush>
         </Border>
 
+        <!-- Navigation -->
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="7" Grid.RowSpan="3" >
 
+            <Button  x:Name="BtnNaviLeftFirst" Height="20" Width="20" Tag="first" Margin="5,0,0,0" 
+                         Command="{Binding MoveFirst, Source={StaticResource navi}}">
+                <StackPanel Orientation="Horizontal" >
+                    <Image Source="/img/arrow-left_first.png" Stretch="Fill" Height="13"/>
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="BtnNaviLeft" Height="20" Width="20" Tag="left" Margin="1,0,0,0"
+                        Command="{Binding MoveLeft, Source={StaticResource navi}}">
+                <StackPanel Orientation="Horizontal" >
+                    <Image Source="/img/arrow-left.png" Stretch="Fill" Height="13"/>
+                </StackPanel>
+            </Button>
+
+            <TextBox x:Name="TxtNavieRec" Width="55" HorizontalAlignment="Left" Padding="0,2,0,0" FontSize="11" Height="20"
+                     FontWeight="SemiBold" IsReadOnly="True" Margin="1,0,0,0" 
+                         Text="{Binding DgRowIndex, Source={StaticResource navi}, Mode=OneWay, Converter={StaticResource NaviCurrentConverter}}"/>
+
+            <Label x:Name="LblNavieRec" Height="20" Width="49" HorizontalAlignment="Left" FontSize="11" FontWeight="SemiBold" 
+                   Padding="0,3,0,0" Margin="1,0,0,0"
+                       Content="{Binding GetRowCount, Source={StaticResource navi}, Mode=OneWay, Converter={StaticResource NaviTotalConverter}}"/>
+
+            <Button x:Name="BtnNaviRight" HorizontalAlignment="Left" Height="20" Width="20" Tag="right" Margin="1,0,0,0"
+                        Command="{Binding MoveRight, Source={StaticResource navi}}">
+                <StackPanel Orientation="Horizontal" >
+                    <Image Source="/img/arrow-right.png" Stretch="Fill" Height="13"/>
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="BtnNaviRightLast" HorizontalAlignment="Left" Height="20" Width="20" Tag="last" Margin="1,0,0,0"
+                        Command="{Binding MoveLast, Source={StaticResource navi}}">
+                <StackPanel Orientation="Horizontal" >
+                    <Image Source="/img/arrow-right_last.png" Stretch="Fill" Height="13"/>
+                </StackPanel>
+            </Button>
+
+
+        </StackPanel>
     </Grid>
 </Window>

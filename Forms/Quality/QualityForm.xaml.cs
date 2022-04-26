@@ -47,7 +47,6 @@ namespace Quality_Control.Forms.Quality
             {
                 DgQuality.ScrollIntoView(item);
             }
-
         }
     }
 }

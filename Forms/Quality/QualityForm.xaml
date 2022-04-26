@@ -163,7 +163,7 @@
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
                 <TextBox x:Name="TxtFilterNumber" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
                          PreviewTextInput="NumberValidationTextBox"
-                         Margin="{Binding TxtNumberLeftPosition}" 
+                         Margin="{Binding TxtNumberLeftPosition}"
                          Text="{Binding ProductNumber, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                          Width="{Binding ElementName=ColYearNumber, Path=ActualWidth}">
                     <i:Interaction.Triggers>
@@ -171,6 +171,9 @@
                             <cmd:EventToCommand Command="{Binding OnProductNumberFilterTextChanged}" PassEventArgsToCommand="True" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
+                    <i:Interaction.Behaviors>
+                        <beh:TextBooxLostFocus/>
+                    </i:Interaction.Behaviors>
                 </TextBox>
                 <TextBox x:Name="TxtFilterNname" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="1,0,0,5"
                          Text="{Binding ProductName, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
@@ -180,6 +183,9 @@
                             <cmd:EventToCommand Command="{Binding OnProductNameFilterTextChanged}" PassEventArgsToCommand="True" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
+                    <i:Interaction.Behaviors>
+                        <beh:TextBooxLostFocus/>
+                    </i:Interaction.Behaviors>
                 </TextBox>
             </StackPanel>
             
@@ -265,7 +271,7 @@
                             IsEnabled="{Binding IsTextBoxActive}"
                             Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" >
                     <i:Interaction.Behaviors>
-                        <beh:DatePickerLostFocus />
+                        <beh:TextBooxLostFocus />
                     </i:Interaction.Behaviors>
                 </DatePicker>
                 <Label x:Name="LblProduct" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" 

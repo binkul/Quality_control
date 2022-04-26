@@ -76,6 +76,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Behaviors\DatePickerLostFocus.cs" />
+    <Compile Include="Behaviors\TextBooxLostFocus.cs" />
     <Compile Include="Commons\IRepository.cs" />
     <Compile Include="Commons\RepositoryCommon.cs" />
     <Compile Include="Commons\SortableObservableCollection.cs" />
@@ -91,6 +92,7 @@
       <DependentUpon>AddNewForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\AddNew\ModelView\AddNewMV.cs" />
+    <Compile Include="Forms\AddNew\Model\ProductModel.cs" />
     <Compile Include="Forms\Navigation\INavigation.cs" />
     <Compile Include="Forms\Navigation\NaviButtonFirst.cs" />
     <Compile Include="Forms\Navigation\NaviButtonLast.cs" />
@@ -113,12 +115,14 @@
       <DependentUpon>RegisterForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Tools\WindowsOperation.cs" />
+    <Compile Include="Repository\ProductRepository.cs" />
     <Compile Include="Repository\QualityDataRepository.cs" />
     <Compile Include="Repository\QualityRepository.cs" />
     <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Security\Encrypt.cs" />
     <Compile Include="Security\User.cs" />
     <Compile Include="Security\UserSingleton.cs" />
+    <Compile Include="Service\ProductService.cs" />
     <Compile Include="Service\QualityDataService.cs" />
     <Compile Include="Service\QualityService.cs" />
   </ItemGroup>
