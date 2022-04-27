@@ -15,7 +15,8 @@ namespace Quality_Control.Repository
             "Where YEAR(q.production_date)=XXXX Order By q.number";
         private readonly string _getByNumberAndYear = "Select q.id, q.number, q.product_name, q.product_index, q.labbook_id, q.remarks, q.active_fields, "
             + " q.production_date, q.login_id, u.login, q.product_type_id, t.name From LabBook.dbo.QualityControl q left join LabBook.dbo.Users u on "
-            + "q.login_id= u.id left join LabBook.dbo.CmbPaintType t on q.product_type_id= t.id Where q.number= xxxx AND YEAR(q.production_date)=yyyy";
+            + " q.login_id=u.id left join LabBook.dbo.CmbPaintType t on q.product_type_id=t.id Where q.number=xxxx AND YEAR(q.production_date)=yyyy";
+        private readonly string _getFieldsByLabbokId = "Select active_fields From LabBook.dbo.QualityControlFields Where labbook_id=";
         private readonly string _allYearsQuery = "Select Distinct YEAR(production_date) as year from Labbook.dbo.QualityControl Order by YEAR(production_date)";
         private readonly string _deleteQualityByIdQuery = "Delete From LabBook.dbo.QualityControl Where id=";
         private readonly string _qualityUpdateQuery = "Update LabBook.dbo.QualityControl Set production_date=@production_date, number=@number, product_name=@product_name, product_index=@product_index, " +
@@ -90,7 +91,7 @@ namespace Quality_Control.Repository
 
             try
             {
-                string query = _existByNumberAndYear.Replace("xxxx", number.ToString());
+                string query = _getByNumberAndYear.Replace("xxxx", number.ToString());
                 cmd.CommandText = query.Replace("yyyy", year.ToString());
                 cmd.Connection = connection;
 
@@ -119,12 +120,12 @@ namespace Quality_Control.Repository
             }
             catch (SqlException ex)
             {
-                _ = MessageBox.Show("Problem z zapytaniem do tabeli QualityControl (getByNumberAndYear) - niewłaściwa kwerenda lub brak połaczenia z serwerem: '" + ex.Message + "'",
+                _ = MessageBox.Show("Problem z zapytaniem do tabeli QualityControl (GetByNumberAndYear) - niewłaściwa kwerenda lub brak połaczenia z serwerem: '" + ex.Message + "'",
                     "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu odczytu danych z tabeli QualityControl.",
+                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z odczytu danych z tabeli QualityControl.",
                     "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
@@ -168,6 +169,38 @@ namespace Quality_Control.Repository
                 if (connection.State == ConnectionState.Open)
                     connection.Close();
             }
+            return result;
+        }
+
+        public string GetActiveFieldsByLabBookId(long labBookId)
+        {
+            string result = "";
+            SqlConnection connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString());
+            SqlCommand cmd = new SqlCommand();
+
+            try
+            {
+                cmd.CommandText = _getFieldsByLabbokId + labBookId.ToString();
+                cmd.Connection = connection;
+
+                connection.Open();
+                result = (string)cmd.ExecuteScalar();
+            }
+            catch (SqlException ex)
+            {
+                _ = MessageBox.Show("Problem z zapytaniem do tabeli QualityControlFields (GetActiveFieldsByLabBookId) - niewłaściwa kwerenda lub brak połaczenia z serwerem: '" + ex.Message + "'.",
+                    "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd odczytu z QualityControlFields.",
+                    "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
             return result;
         }
 

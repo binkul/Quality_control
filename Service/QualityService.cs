@@ -55,15 +55,9 @@ namespace Quality_Control.Service
         {
             QualityModel result = quality;
 
-            if (_repository.ExistByNumberAndYear(quality.Number, quality.ProductionDate.Year) == DbResponse.TRUE)
-            {
-                _ = MessageBox.Show("Podany numer produckji P" + quality.Number + " z dnia produkcji " + quality.ProductionDate.ToShortDateString() +
-                    " istnieje już w bazie danych!", "Błędny numer", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            else
-            {
-                result = _repository.Save(quality);
-            }
+            string fields = _repository.GetActiveFieldsByLabBookId(quality.LabBookId);
+            quality.ActiveDataFields = !string.IsNullOrEmpty(fields) ? fields : DefaultData.DefaultDataFields;
+            result = _repository.Save(quality);
 
             return result;
         }

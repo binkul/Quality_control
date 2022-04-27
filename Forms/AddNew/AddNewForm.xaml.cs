@@ -14,7 +14,7 @@ namespace Quality_Control.Forms.AddNew
     public partial class AddNewForm : Window
     {
         private readonly AddNewMV view;
-        public bool Cancel { get; private set; } = false;
+        public bool Cancel { get; private set; } = true;
         public string Product => view.ProductName;
         public string Index => view.ProductIndex;
         public int Number => Convert.ToInt32(view.ProductNumber);
@@ -55,8 +55,16 @@ namespace Quality_Control.Forms.AddNew
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
-            Cancel = false;
-            Close();
+            if (view.IsNumberCorrect())
+            {
+                Cancel = false;
+                Close();
+            }
+            else
+            {
+                _ = MessageBox.Show("Podany numer produckji P" + Number + " z dnia produkcji " + ProductionDate.ToShortDateString() +
+                    " istnieje już w bazie danych!", "Błędny numer", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void DgProduct_SelectionChanged(object sender, SelectionChangedEventArgs e)

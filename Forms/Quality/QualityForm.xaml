@@ -270,7 +270,7 @@
                 <DatePicker x:Name="DpPicker" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2,0,0,0"
                             SelectedDateFormat="Short"
                             IsEnabled="{Binding IsTextBoxActive}"
-                            Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" >
+                            SelectedDate="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" >
                     <i:Interaction.Behaviors>
                         <beh:DatePickerLostFocus />
                     </i:Interaction.Behaviors>

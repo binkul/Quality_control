@@ -2,6 +2,7 @@
 using Quality_Control.Commons;
 using Quality_Control.Forms.AddNew.Model;
 using Quality_Control.Forms.Navigation;
+using Quality_Control.Repository;
 using Quality_Control.Service;
 using System;
 using System.Collections.Generic;
@@ -75,6 +76,12 @@ namespace Quality_Control.Forms.AddNew.ModelView
         {
             get => _productionDate;
             set => _productionDate = value;
+        }
+
+        internal bool IsNumberCorrect()
+        {
+            QualityRepository repository = new QualityRepository();
+            return repository.ExistByNumberAndYear(Convert.ToInt32(ProductNumber), ProductionDate.Year) == DbResponse.FALSE;
         }
 
         #region Navigation

@@ -12,7 +12,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:cmd="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
-        Title="Nowa produkcja" Height="600" Width="800" Icon="Ok-icon.png" WindowStartupLocation="CenterScreen">
+        Title="Nowa produkcja" Height="600" Width="800" Icon="Ok-icon.png" WindowStartupLocation="CenterScreen" >
     <Window.DataContext>
         <vm:AddNewMV />
     </Window.DataContext>
@@ -64,7 +64,7 @@
             <Label Content="Informacje o produkcji" FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="Blue" />
         </StackPanel>
 
-        <!-- Production number and date -->    
+        <!-- Production number and date 'SelectedDate="{x:Static sys:DateTime.Now}"' -->    
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
             <Label Content="Nr produkcji:" FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="Black" />
             <TextBox FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Width="100" 
@@ -76,8 +76,8 @@
             </TextBox>
             <Label Content="Data produkcji:" FontWeight="Bold" FontSize="14" Margin="100,0,0,0" VerticalAlignment="Center" Foreground="Black" />
             <DatePicker FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Margin="10,0,0,0"
-                        SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" 
-                        Text="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" >
+                        SelectedDateFormat="Short"
+                        SelectedDate="{Binding ProductionDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" >
                 <i:Interaction.Behaviors>
                     <beh:TextBooxLostFocus />
                 </i:Interaction.Behaviors>

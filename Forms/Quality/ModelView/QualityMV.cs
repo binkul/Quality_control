@@ -432,26 +432,29 @@ namespace Quality_Control.Forms.Quality.ModelView
             if (quality.ProductionDate.Year == Year)
             {
                 FullQuality.Add(quality);
-                FullQuality.Sort(x => x.ProductName, ListSortDirection.Ascending);
-                Filter();
-                for (int i = 0; i < Quality.Count; i++)
-                {
-                    if (quality.Id == Quality[i].Id)
-                    {
-                        DgRowIndex = i;
-                        break;
-                    }
-                }
+                FullQuality.Sort(x => x.Number, ListSortDirection.Ascending);
             }
             else if (quality.ProductionDate.Year != Year && Years.Contains(quality.ProductionDate.Year))
             {
-
+                Year = quality.ProductionDate.Year;
+                OnPropertyChanged(nameof(Year));
             }
             else
             {
-
+                ReloadYears();
+                Year = quality.ProductionDate.Year;
+                OnPropertyChanged(nameof(Year));
             }
 
+            Filter();
+            for (int i = 0; i < Quality.Count; i++)
+            {
+                if (quality.Id == Quality[i].Id)
+                {
+                    DgRowIndex = i;
+                    break;
+                }
+            }
         }
     }
 }
