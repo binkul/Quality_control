@@ -3,12 +3,11 @@ using System.ComponentModel;
 
 namespace Quality_Control.Forms.Quality.Model
 {
-    public class QualityModel : INotifyPropertyChanged
+    public class QualityModel : INotifyPropertyChanged, IComparable<QualityModel>
     {
-        private long _id;
-        private int _number;
-        private string _yearNumber;
-        private string _productName;
+        private long _id = -1;
+        private int _number = 0;
+        private string _productName = "";
         private string _productIndex = "";
         private long _labBookId = 1;
         private int _productTypeId = 1;
@@ -22,12 +21,15 @@ namespace Quality_Control.Forms.Quality.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public QualityModel(long id, int number, string yearNumber, string productName, string productIndex, long labBookId, int productTypeId, string productTypeName,
+        public QualityModel()
+        {
+        }
+
+        public QualityModel(long id, int number, string productName, string productIndex, long labBookId, int productTypeId, string productTypeName,
             string remarks, string activeDataFields, DateTime productionDate, long loginId, string login)
         {
             _id = id;
             _number = number;
-            _yearNumber = yearNumber;
             _productName = productName;
             _productIndex = productIndex;
             _labBookId = labBookId;
@@ -40,11 +42,10 @@ namespace Quality_Control.Forms.Quality.Model
             _login = login;
         }
 
-        public QualityModel(int number, string yearNumber, string productName, string productIndex, long labBookId, int productTypeId, string productTypeName,
+        public QualityModel(int number, string productName, string productIndex, long labBookId, int productTypeId, string productTypeName,
             string remarks, string activeDataFields, DateTime productionDate, long loginId, string login)
         {
             _number = number;
-            _yearNumber = yearNumber;
             _productName = productName;
             _productIndex = productIndex;
             _labBookId = labBookId;
@@ -69,11 +70,7 @@ namespace Quality_Control.Forms.Quality.Model
             set => _number = value;
         }
 
-        public string YearNumber
-        {
-            get => _yearNumber;
-            set => _yearNumber = value;
-        }
+        public string YearNumber => ProductionDate.Year.ToString().Substring(2, 2) + "/" + Number.ToString();
 
         public string ProductName
         {
@@ -139,6 +136,11 @@ namespace Quality_Control.Forms.Quality.Model
         {
             get => _modified;
             set => _modified = value;
+        }
+
+        public int CompareTo(QualityModel other)
+        {
+            return ProductName.CompareTo(other.ProductName);
         }
     }
 }

@@ -16,9 +16,9 @@ namespace Quality_Control.Repository
         private readonly string _getAllActiveProductQuery = "Select id, labbook_id, name, hp_index, description, is_danger, is_archive, is_experimetPhase, product_price_id, product_type_id, " +
             "product_gloss_id, created, login_id From LabBook.dbo.Product Where is_archive='false' AND is_experimetPhase='false' Order By name";
 
-        public SortableObservableCollection<ProductModel> GetOnlyActiveProduct()
+        public List<ProductModel> GetOnlyActiveProduct()
         {
-            SortableObservableCollection<ProductModel> quality = new SortableObservableCollection<ProductModel>();
+            List<ProductModel> quality = new List<ProductModel>();
 
             using (SqlConnection connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString()))
             {

@@ -77,6 +77,8 @@
     </Compile>
     <Compile Include="Behaviors\DatePickerLostFocus.cs" />
     <Compile Include="Behaviors\TextBooxLostFocus.cs" />
+    <Compile Include="Commons\DbResponse.cs" />
+    <Compile Include="Commons\DefaultData.cs" />
     <Compile Include="Commons\IRepository.cs" />
     <Compile Include="Commons\RepositoryCommon.cs" />
     <Compile Include="Commons\SortableObservableCollection.cs" />

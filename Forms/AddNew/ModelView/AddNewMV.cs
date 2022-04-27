@@ -4,6 +4,7 @@ using Quality_Control.Forms.AddNew.Model;
 using Quality_Control.Forms.Navigation;
 using Quality_Control.Service;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,7 +42,7 @@ namespace Quality_Control.Forms.AddNew.ModelView
             }
         }
 
-        public SortableObservableCollection<ProductModel> Products => _service.FilteredProducts;
+        public List<ProductModel> Products => _service.FilteredProducts;
 
         internal NavigationMV SetNavigationMV
         {
@@ -65,6 +66,10 @@ namespace Quality_Control.Forms.AddNew.ModelView
         public string ProductIndex => ActualProduct != null ? ActualProduct.Index : "";
 
         public string ProductName => ActualProduct != null ? ActualProduct.Name : "";
+
+        public long ProductLabBookId => ActualProduct != null ? ActualProduct.LabBookId : 0;
+
+        public int ProductType => ActualProduct != null ? ActualProduct.TypeId : 1;
 
         public DateTime ProductionDate
         {

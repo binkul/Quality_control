@@ -4,6 +4,7 @@ using Quality_Control.Forms.AddNew;
 using Quality_Control.Forms.Navigation;
 using Quality_Control.Forms.Quality.Command;
 using Quality_Control.Forms.Quality.Model;
+using Quality_Control.Security;
 using Quality_Control.Service;
 using System;
 using System.Collections.Generic;
@@ -418,6 +419,39 @@ namespace Quality_Control.Forms.Quality.ModelView
         {
             AddNewForm form = new AddNewForm();
             _ = form.ShowDialog();
+
+            if (form.Cancel) return;
+
+            QualityModel quality = new QualityModel(form.Number, form.Product, form.Index, form.LabBookId,
+                    form.Type, "", "", "", form.ProductionDate, UserSingleton.Id, UserSingleton.Login);
+
+            quality = _service.AddNewQuality(quality);
+
+            if (quality.Id <= 0) return;
+
+            if (quality.ProductionDate.Year == Year)
+            {
+                FullQuality.Add(quality);
+                FullQuality.Sort(x => x.ProductName, ListSortDirection.Ascending);
+                Filter();
+                for (int i = 0; i < Quality.Count; i++)
+                {
+                    if (quality.Id == Quality[i].Id)
+                    {
+                        DgRowIndex = i;
+                        break;
+                    }
+                }
+            }
+            else if (quality.ProductionDate.Year != Year && Years.Contains(quality.ProductionDate.Year))
+            {
+
+            }
+            else
+            {
+
+            }
+
         }
     }
 }

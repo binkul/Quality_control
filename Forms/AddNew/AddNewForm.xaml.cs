@@ -1,19 +1,10 @@
 ﻿using Quality_Control.Forms.AddNew.ModelView;
 using Quality_Control.Forms.Navigation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Quality_Control.Forms.AddNew
 {
@@ -23,13 +14,13 @@ namespace Quality_Control.Forms.AddNew
     public partial class AddNewForm : Window
     {
         private readonly AddNewMV view;
-        public bool Process { get; private set; } = false;
+        public bool Cancel { get; private set; } = false;
         public string Product => view.ProductName;
         public string Index => view.ProductIndex;
-        public int Number { get; private set; }
-        public int Type { get; private set; }
-        public long NumberD { get; private set; }
-        public DateTime Date => view.ProductionDate;
+        public int Number => Convert.ToInt32(view.ProductNumber);
+        public int Type => view.ProductType;
+        public long LabBookId => view.ProductLabBookId;
+        public DateTime ProductionDate => view.ProductionDate;
 
         public AddNewForm()
         {
@@ -54,6 +45,33 @@ namespace Quality_Control.Forms.AddNew
         {
             Regex regex = new Regex(@"[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            Cancel = true;
+            Close();
+        }
+
+        private void AcceptButton_Click(object sender, RoutedEventArgs e)
+        {
+            Cancel = false;
+            Close();
+        }
+
+        private void DgProduct_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int index = DgProduct.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+
+            object item = DgProduct.Items[index];
+            if (!(DgProduct.ItemContainerGenerator.ContainerFromIndex(index) is DataGridRow))
+            {
+                DgProduct.ScrollIntoView(item);
+            }
         }
     }
 }

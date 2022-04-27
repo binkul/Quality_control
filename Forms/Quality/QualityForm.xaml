@@ -193,11 +193,12 @@
             <DataGrid x:Name="DgQuality" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="2,2,2,2" AutoGenerateColumns="False" 
                       ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow" IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
                       CanUserAddRows="False"  CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column"
+                      SelectionChanged="DgQuality_SelectionChanged"
                       HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       ItemsSource="{Binding Quality}"
                       SelectedItem="{Binding ActualQuality, Mode=OneWayToSource}"
-                      SelectedIndex="{Binding DgRowIndex, Mode=TwoWay, FallbackValue=0}" SelectionChanged="DgQuality_SelectionChanged">
+                      SelectedIndex="{Binding DgRowIndex, Mode=TwoWay, FallbackValue=0}" >
 
                 <DataGrid.Columns>
                     

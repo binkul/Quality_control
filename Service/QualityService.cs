@@ -51,6 +51,23 @@ namespace Quality_Control.Service
             return _repository.GetAllYears();
         }
 
+        public QualityModel AddNewQuality(QualityModel quality)
+        {
+            QualityModel result = quality;
+
+            if (_repository.ExistByNumberAndYear(quality.Number, quality.ProductionDate.Year) == DbResponse.TRUE)
+            {
+                _ = MessageBox.Show("Podany numer produckji P" + quality.Number + " z dnia produkcji " + quality.ProductionDate.ToShortDateString() +
+                    " istnieje już w bazie danych!", "Błędny numer", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            else
+            {
+                result = _repository.Save(quality);
+            }
+
+            return result;
+        }
+
         public bool Delete(QualityModel quality)
         {
             long id = quality.Id;

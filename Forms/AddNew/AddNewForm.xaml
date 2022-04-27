@@ -128,6 +128,7 @@
         <DataGrid x:Name="DgProduct" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Margin="2,2,2,2" AutoGenerateColumns="False" 
                   ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow" IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
                   CanUserAddRows="False"  CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column" IsReadOnly="True" 
+                  SelectionChanged="DgProduct_SelectionChanged"
                   HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
                   VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
                   ItemsSource="{Binding Products}"
@@ -179,8 +180,10 @@
 
         <!-- Accept and Cancel button -->
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Center">
-            <Button x:Name="AcceptButton" Content="Ok" Width="70" FontSize="14" FontWeight="Bold" Foreground="Blue" Margin="0,0,10,0"/>
-            <Button x:Name="CancelButton" Content="Anuluj" Width="70" FontSize="14" FontWeight="Bold" Foreground="Red" Margin="0,0,5,0"/>
+            <Button x:Name="AcceptButton" Content="Ok" Width="70" FontSize="14" FontWeight="Bold" Foreground="Blue"
+                    Margin="0,0,10,0" Click="AcceptButton_Click"/>
+            <Button x:Name="CancelButton" Content="Anuluj" Width="70" FontSize="14" FontWeight="Bold" Foreground="Red"
+                    Margin="0,0,5,0" Click="CancelButton_Click"/>
         </StackPanel>
 
         <!-- Border around 'Informacje o produkcji' and Nr produkcji  -->
