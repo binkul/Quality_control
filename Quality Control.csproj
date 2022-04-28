@@ -95,6 +95,11 @@
     </Compile>
     <Compile Include="Forms\AddNew\ModelView\AddNewMV.cs" />
     <Compile Include="Forms\AddNew\Model\ProductModel.cs" />
+    <Compile Include="Forms\Modification\ModelView\ModificationMV.cs" />
+    <Compile Include="Forms\Modification\Model\ModificationModel.cs" />
+    <Compile Include="Forms\Modification\ModificationForm.xaml.cs">
+      <DependentUpon>ModificationForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Navigation\INavigation.cs" />
     <Compile Include="Forms\Navigation\NaviButtonFirst.cs" />
     <Compile Include="Forms\Navigation\NaviButtonLast.cs" />
@@ -170,6 +175,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Forms\Modification\ModificationForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\Quality\QualityForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -221,6 +230,5 @@
   <ItemGroup>
     <Resource Include="Forms\AddNew\Ok-icon.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

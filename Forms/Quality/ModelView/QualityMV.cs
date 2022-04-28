@@ -9,8 +9,6 @@ using Quality_Control.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,16 +26,11 @@ namespace Quality_Control.Forms.Quality.ModelView
         private readonly QualityService _service = new QualityService();
         private QualityDataMV _qualityDataMV;
         private NavigationMV _navigationMV;
-        private QualityModel _actualRow;
         private int _selectedIndex;
         private string _remarks;
-        private string _productName = "";
-        private string _productNumber = "";
         private DateTime _productionDate;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public SortableObservableCollection<QualityModel> FullQuality { get; private set; }
-        public SortableObservableCollection<QualityModel> Quality { get; private set; }
         public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNameFilterTextChanged { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNumberFilterTextChanged { get; set; }
@@ -46,8 +39,6 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public QualityMV()
         {
-            FullQuality = _service.GetAllQuality(DateTime.Today.Year);
-            Quality = FullQuality;
             OnClosingCommand = new RelayCommand<CancelEventArgs>(this.OnClosingCommandExecuted);
             OnProductNameFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNameTextChangedFilter);
             OnProductNumberFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNumberTextChangedFilter);
@@ -64,9 +55,11 @@ namespace Quality_Control.Forms.Quality.ModelView
             set => _navigationMV = value;
         }
 
+        public SortableObservableCollection<QualityModel> Quality => _service.Quality;
+
         internal bool Modified => ModifiedQuality || ModifiedData;
 
-        private bool ModifiedQuality => Quality.Any(x => x.Modified);
+        private bool ModifiedQuality => _service.ModifiedQuality;
 
         private bool ModifiedData
         {
@@ -121,8 +114,7 @@ namespace Quality_Control.Forms.Quality.ModelView
             {
                 ReloadYears();
             }
-            FullQuality = _service.GetAllQuality(Year);
-            Quality = FullQuality;
+            _service.ReloadQuality(Year);
             Filter();
         }
 
@@ -130,17 +122,9 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         #region Filtering
 
-        public string ProductName
-        { 
-            get => _productName;
-            set => _productName = value;
-        }
+        public string ProductName { get; set; } = "";
 
-        public string ProductNumber
-        {
-            get => _productNumber;
-            set => _productNumber = value;
-        }
+        public string ProductNumber { get; set; } = "";
 
         public void OnProductNameTextChangedFilter(TextChangedEventArgs e)
         {
@@ -154,28 +138,7 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         private void Filter()
         {
-            if (!string.IsNullOrEmpty(ProductName) || !string.IsNullOrEmpty(ProductNumber))
-            {
-
-                int number = ProductNumber.Length > 0 ? Convert.ToInt32(ProductNumber) : -1;
-
-                List<QualityModel> result = FullQuality
-                    .Where(x => x.ProductName.ToLower().Contains(ProductName))
-                    .Where(x => x.Number >= number)
-                    .ToList();
-
-                SortableObservableCollection<QualityModel> newQuality = new SortableObservableCollection<QualityModel>();
-                foreach (QualityModel model in result)
-                {
-                    newQuality.Add(model);
-                }
-
-                Quality = newQuality;
-            }
-            else
-            {
-                Quality = FullQuality;
-            }
+            _service.Filter(ProductNumber, ProductName);
             DgRowIndex = 0;
             OnPropertyChanged(nameof(Quality));
         }
@@ -232,15 +195,11 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public bool IsFilterOn => ProductName.Length > 0 || ProductNumber.Length > 0;
 
-        public bool IsAnyQuality => Quality.Count > 0;
+        public bool IsAnyQuality => _service.GetQualityCount > 0;
 
-        internal QualityModel GetCurrentQuality => Quality[_selectedIndex];
+        internal QualityModel GetCurrentQuality => _service.Quality[_selectedIndex];
 
-        public QualityModel ActualQuality
-        {
-            internal get => _actualRow;
-            set => _actualRow = value;
-        }
+        public QualityModel ActualQuality { internal get; set; }
 
         public bool IsTextBoxActive { get; set; } = true;
 
@@ -250,8 +209,8 @@ namespace Quality_Control.Forms.Quality.ModelView
             set
             {
                 _remarks = value;
-                Quality[_selectedIndex].Remarks = _remarks;
-                Quality[_selectedIndex].Modified = true;
+                _service.Quality[_selectedIndex].Remarks = _remarks;
+                _service.Quality[_selectedIndex].Modified = true;
             }
         }
 
@@ -261,8 +220,8 @@ namespace Quality_Control.Forms.Quality.ModelView
             set
             {
                 _productionDate = value;
-                Quality[_selectedIndex].ProductionDate = _productionDate;
-                Quality[_selectedIndex].Modified = true;
+                _service.Quality[_selectedIndex].ProductionDate = _productionDate;
+                _service.Quality[_selectedIndex].Modified = true;
             }
         }
 
@@ -272,10 +231,7 @@ namespace Quality_Control.Forms.Quality.ModelView
             set => _service.Year = value;
         }
 
-        public List<int> Years
-        {
-            get => _service.Years;
-        }
+        public List<int> Years => _service.Years;
 
         #endregion
 
@@ -289,9 +245,9 @@ namespace Quality_Control.Forms.Quality.ModelView
                 QualityModel model = null;
                 _selectedIndex = value;
 
-                if (value >= 0 && Quality.Count != 0 && value < Quality.Count)
+                if (value >= 0 && _service.GetQualityCount != 0 && value < _service.GetQualityCount)
                 {
-                    model = Quality[_selectedIndex];
+                    model = _service.Quality[_selectedIndex];
                     _remarks = model.Remarks;
                     _productionDate = model.ProductionDate;
                     IsTextBoxActive = true;
@@ -313,7 +269,7 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
-        public int GetRowCount => Quality.Count;
+        public int GetRowCount => _service.GetQualityCount;
 
         public void Refresh()
         {
@@ -322,6 +278,8 @@ namespace Quality_Control.Forms.Quality.ModelView
         }
 
         #endregion
+
+        #region Command and their procedures
 
         public ICommand SaveButton
         {
@@ -353,17 +311,7 @@ namespace Quality_Control.Forms.Quality.ModelView
         public bool SaveQuality()
         {
             if (!ModifiedQuality) return false;
-            bool reload = false;
-
-            List<QualityModel> qualities = FullQuality.Where(x => x.Modified == true).ToList();
-            foreach (QualityModel quality in qualities)
-            {
-                if (_service.Update(quality))
-                {
-                    quality.Modified = false;
-                    if (CheckQualityYear(quality)) reload = true;
-                }
-            }
+            bool reload = _service.Update();
             return reload;
         }
 
@@ -388,31 +336,10 @@ namespace Quality_Control.Forms.Quality.ModelView
             OnPropertyChanged(nameof(Years), nameof(Year));
         }
 
-        private bool CheckQualityYear(QualityModel quality)
-        {
-            bool result = false;
-
-            if (quality.ProductionDate.Year != Year)
-            {
-                _ = FullQuality.Remove(quality);
-                _ = Quality.Remove(quality);
-                if (FullQuality.Count == 0 || !Years.Contains(quality.ProductionDate.Year)) result = true;
-            }
-
-            return result;
-        }
-
         public void DeleteAll()
         {
             if (ActualQuality == null) return;
-
-            long id = ActualQuality.Id;
-            if (_service.Delete(ActualQuality))
-            {
-                QualityModel quality = FullQuality.First(x => x.Id == id);
-                _ = FullQuality.Remove(quality);
-                _ = Quality.Remove(quality);
-            }
+            _service.Delete(ActualQuality);
         }
 
         public void AddNew()
@@ -425,14 +352,13 @@ namespace Quality_Control.Forms.Quality.ModelView
             QualityModel quality = new QualityModel(form.Number, form.Product, form.Index, form.LabBookId,
                     form.Type, "", "", "", form.ProductionDate, UserSingleton.Id, UserSingleton.Login);
 
-            quality = _service.AddNewQuality(quality);
+            quality = _service.SaveNewQuality(quality);
 
             if (quality.Id <= 0) return;
 
             if (quality.ProductionDate.Year == Year)
             {
-                FullQuality.Add(quality);
-                FullQuality.Sort(x => x.Number, ListSortDirection.Ascending);
+                _service.AddQuality(quality);
             }
             else if (quality.ProductionDate.Year != Year && Years.Contains(quality.ProductionDate.Year))
             {
@@ -447,14 +373,16 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
 
             Filter();
-            for (int i = 0; i < Quality.Count; i++)
+            for (int i = 0; i < _service.GetQualityCount; i++)
             {
-                if (quality.Id == Quality[i].Id)
+                if (quality.Id == _service.Quality[i].Id)
                 {
                     DgRowIndex = i;
                     break;
                 }
             }
         }
+
+        #endregion
     }
 }
