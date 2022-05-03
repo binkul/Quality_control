@@ -1,0 +1,206 @@
+﻿<Window x:Class="Quality_Control.Forms.Setting.SettingForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Quality_Control.Forms.Setting"
+        xmlns:beh="clr-namespace:Quality_Control.Behaviors"
+        xmlns:vm="clr-namespace:Quality_Control.Forms.Setting.ModelView"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:cmd="http://www.galasoft.ch/mvvmlight"
+        mc:Ignorable="d"
+        Title="Ustawienia" Height="450" Width="800"  Icon="/img/Ok-icon.png" WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <vm:SettingMV />
+    </Window.DataContext>
+    <Window.Resources>
+        <Style x:Key="AllignColmnHeaderCenter" TargetType="DataGridColumnHeader">
+            <Setter Property="SeparatorBrush" Value="WhiteSmoke" />
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Height" Value="25" />
+        </Style>
+        <Style x:Key="AllignCellCenter" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0,0,0,0" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+        <Style x:Key="AllignCellLeft" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="3,0,0,0" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+        <SolidColorBrush x:Key="DataGridBorderColor" Color="#FFB1AEAE"/>
+    </Window.Resources>
+    <DockPanel>
+
+        <Ribbon DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">
+            <RibbonTab Header="Ustawienia dla pól">
+                <RibbonGroup Header="Operacje" FontSize="10">
+                    <RibbonButton Label="Zapisz" LargeImageSource="/Img/Save.png" FontWeight="Regular" >
+                        <RibbonButton.ToolTip >
+                            <ToolTip Background="Yellow">
+                                <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
+                                    <TextBlock FontSize="12">Zapisz zmiany</TextBlock>
+                                </DockPanel>
+                            </ToolTip>
+                        </RibbonButton.ToolTip>
+                    </RibbonButton>
+                    <RibbonButton Label="Wyzeruj" LargeImageSource="/Img/delete.png" FontWeight="Regular"
+                                  Command="{Binding DeleteButton}">
+                        <RibbonButton.ToolTip >
+                            <ToolTip Background="Yellow">
+                                <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
+                                    <TextBlock FontSize="12">Wyzeruj wszystkie pola</TextBlock>
+                                </DockPanel>
+                            </ToolTip>
+                        </RibbonButton.ToolTip>
+                    </RibbonButton>
+                    <RibbonButton Label="Ustaw" LargeImageSource="/Img/Ok-icon.png" FontWeight="Regular"
+                                  Command="{Binding SetButton}">
+                        <RibbonButton.ToolTip >
+                            <ToolTip Background="Yellow">
+                                <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
+                                    <TextBlock FontSize="12">Zaznacz wszystkie pola</TextBlock>
+                                </DockPanel>
+                            </ToolTip>
+                        </RibbonButton.ToolTip>
+                    </RibbonButton>
+                    <RibbonButton Label="Standard + pH" LargeImageSource="/Img/mark.png" FontWeight="Regular"
+                                  Command="{Binding StdButton}">
+                        <RibbonButton.ToolTip >
+                            <ToolTip Background="Yellow">
+                                <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
+                                    <TextBlock FontSize="12">Standardowe pola</TextBlock>
+                                </DockPanel>
+                            </ToolTip>
+                        </RibbonButton.ToolTip>
+                    </RibbonButton>
+                    <RibbonButton Label="Standard" LargeImageSource="/Img/mark.png" FontWeight="Regular"
+                                  Command="{Binding StdWithpHButton}">
+                        <RibbonButton.ToolTip >
+                            <ToolTip Background="Yellow">
+                                <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
+                                    <TextBlock FontSize="12">Standardowe pola bez pH</TextBlock>
+                                </DockPanel>
+                            </ToolTip>
+                        </RibbonButton.ToolTip>
+                    </RibbonButton>
+                    <RibbonButton Label="Kopiuj" LargeImageSource="/Img/copy.png" FontWeight="Regular"
+                                  Command="{Binding CopyButton}">
+                        <RibbonButton.ToolTip >
+                            <ToolTip Background="Yellow">
+                                <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
+                                    <TextBlock FontSize="12">Standardowe pola bez pH</TextBlock>
+                                </DockPanel>
+                            </ToolTip>
+                        </RibbonButton.ToolTip>
+                    </RibbonButton>
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="0.5*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="5" />
+            </Grid.RowDefinitions>
+
+            <!-- Filtering -->
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
+                <TextBox x:Name="NumberFilter" FontSize="14" VerticalAlignment="Bottom"
+                         PreviewTextInput="NumberValidationTextBox"
+                         Margin="{Binding TxtIndexLeftPosition}"
+                         Text="{Binding NumberFilterTxt, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                         Width="{Binding ElementName=ColNumber, Path=ActualWidth}" >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="TextChanged">
+                            <cmd:EventToCommand Command="{Binding OnProductNumberFilterTextChanged}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <i:Interaction.Behaviors>
+                        <beh:TextBooxLostFocus/>
+                    </i:Interaction.Behaviors>
+                </TextBox>
+                <TextBox x:Name="nameFilter" FontSize="14" VerticalAlignment="Bottom" Margin="1,0,0,5" 
+                         Text="{Binding FilterNameTxt, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                         Width="{Binding ElementName=ColName, Path=ActualWidth}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="TextChanged">
+                            <cmd:EventToCommand Command="{Binding OnProductNameFilterTextChanged}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <i:Interaction.Behaviors>
+                        <beh:TextBooxLostFocus/>
+                    </i:Interaction.Behaviors>
+                </TextBox>
+            </StackPanel>
+
+            <!-- Main DataGrid -->
+            <DataGrid x:Name="DgProduct" Grid.Column="0" Grid.Row="1" Margin="2,2,2,2" AutoGenerateColumns="False" 
+                  ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow" IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
+                  CanUserAddRows="False"  CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column" IsReadOnly="True" 
+                  HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
+                  VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
+                  ItemsSource="{Binding Products}"
+                  SelectedItem="{Binding ActualProduct, Mode=OneWayToSource}"
+                  SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, FallbackValue=0}" >
+
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Binding="{Binding Id}" Visibility="Collapsed" />
+                    <DataGridTextColumn Binding="{Binding Index}" Visibility="Collapsed" />
+                    <DataGridTextColumn Binding="{Binding TypeId}" Visibility="Collapsed" />
+
+                    <!-- Arrow selector -->
+                    <DataGridTemplateColumn x:Name="ColStatus" HeaderStyle="{StaticResource AllignColmnHeaderCenter}" 
+                                                        IsReadOnly="True" CanUserSort="False" CanUserResize="False"
+                                                        Width="30">
+                        <DataGridTemplateColumn.CellTemplate >
+                            <DataTemplate>
+                                <StackPanel Background="#FFE5E5E5" Margin="-1,-1,-1,-1">
+                                    <Image x:Name="ArrowRight" Width="18" Height="16" Margin="1,1,1,1" Source="/Img/arrow-right.png" 
+                                                   Visibility="Hidden">
+                                    </Image>
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True" >
+                                        <Setter TargetName="ArrowRight" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Index column -->
+                    <DataGridTextColumn x:Name="ColNumber" Header="Nr D" IsReadOnly="True" Width="0.2*" CanUserSort="False"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellCenter}"
+                                        Binding="{Binding LabBookId}">
+                    </DataGridTextColumn>
+
+                    <!-- name column -->
+                    <DataGridTextColumn x:Name="ColName" Header="Nazwa" IsReadOnly="True" Width="0.9*" CanUserSort="False"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellLeft}"
+                                        Binding="{Binding Name}">
+                    </DataGridTextColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+
+
+        </Grid>
+    </DockPanel>
+</Window>

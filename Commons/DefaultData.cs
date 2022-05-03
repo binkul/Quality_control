@@ -7,7 +7,7 @@ namespace Quality_Control.Commons
         public static readonly string DefaultDataFields = "measure_date|temp|density|pH|vis_1|vis_5|vis_20|disc|comments";
         public static readonly string DefaultDataFieldsNoPh = "measure_date|density|temp|vis_1|vis_5|vis_20|disc|visc_remarks";
 
-        public static IDictionary<string, string> Fields { get; } = new Dictionary<string, string>()
+        public static IDictionary<string, string> DataFields { get; } = new Dictionary<string, string>()
         {
             // KEY - kolumn name id DB; VALUE - column name id DGV|column DisplayIndex in dgv|Column width in DGV|Full column description to set fields
             {"measure_date", "Data|0|100|Data pomiaru" },

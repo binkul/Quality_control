@@ -1,18 +1,14 @@
 ﻿using Quality_Control.Forms.Quality.ModelView;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Quality_Control.Forms.Quality.Command
 {
-    internal class AddNewButton : ICommand
+    internal class SettingsButton : ICommand
     {
         private readonly QualityMV _modelView;
 
-        public AddNewButton(QualityMV modelView)
+        public SettingsButton(QualityMV modelView)
         {
             if (modelView == null) throw new ArgumentNullException("Model widoku jest null");
             _modelView = modelView;
@@ -37,7 +33,8 @@ namespace Quality_Control.Forms.Quality.Command
 
         public void Execute(object parameter)
         {
-            _modelView.AddNew();
+            _modelView.Settings();
         }
+
     }
 }

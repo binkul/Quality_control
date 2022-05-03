@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using Quality_Control.Commons;
 using Quality_Control.Forms.AddNew;
+using Quality_Control.Forms.Modification;
 using Quality_Control.Forms.Navigation;
 using Quality_Control.Forms.Quality.Command;
 using Quality_Control.Forms.Quality.Model;
+using Quality_Control.Forms.Setting;
 using Quality_Control.Security;
 using Quality_Control.Service;
 using System;
@@ -20,6 +22,8 @@ namespace Quality_Control.Forms.Quality.ModelView
         private ICommand _saveButton;
         private ICommand _deleteButton;
         private ICommand _addNewButton;
+        private ICommand _modificationButton;
+        private ICommand _settingsButton;
 
         private readonly double _startLeftPosition = 32;
         private readonly WindowData _windowData = WindowSettings.Read();
@@ -39,7 +43,7 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         public QualityMV()
         {
-            OnClosingCommand = new RelayCommand<CancelEventArgs>(this.OnClosingCommandExecuted);
+            OnClosingCommand = new RelayCommand<CancelEventArgs>(OnClosingCommandExecuted);
             OnProductNameFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNameTextChangedFilter);
             OnProductNumberFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNumberTextChangedFilter);
             OnComboYearSelectionChanged = new RelayCommand<SelectionChangedEventArgs>(OnYearSelectionCommandExecuted);
@@ -308,20 +312,40 @@ namespace Quality_Control.Forms.Quality.ModelView
             }
         }
 
-        public bool SaveQuality()
+        public ICommand ModificationButton
+        {
+            get
+            {
+                if (_modificationButton == null) _modificationButton = new ModificationButton(this);
+                return _modificationButton;
+            }
+
+        }
+
+        public ICommand SettingsButton
+        {
+            get
+            {
+                if (_settingsButton == null) _settingsButton = new SettingsButton(this);
+                return _settingsButton;
+            }
+
+        }
+
+        internal bool SaveQuality()
         {
             if (!ModifiedQuality) return false;
             bool reload = _service.Update();
             return reload;
         }
 
-        public void SaveDataQuality()
+        internal void SaveDataQuality()
         {
             if (ModifiedData)
                 _qualityDataMV.Save();
         }
 
-        public void SaveAll()
+        internal void SaveAll()
         {
             bool reload = SaveQuality();
             SaveDataQuality();
@@ -336,13 +360,13 @@ namespace Quality_Control.Forms.Quality.ModelView
             OnPropertyChanged(nameof(Years), nameof(Year));
         }
 
-        public void DeleteAll()
+        internal void DeleteAll()
         {
             if (ActualQuality == null) return;
             _service.Delete(ActualQuality);
         }
 
-        public void AddNew()
+        internal void AddNew()
         {
             AddNewForm form = new AddNewForm();
             _ = form.ShowDialog();
@@ -381,6 +405,27 @@ namespace Quality_Control.Forms.Quality.ModelView
                     break;
                 }
             }
+        }
+
+        internal void ModifiyFields()
+        {
+            ModificationForm form = new ModificationForm(ActualQuality);
+            _ = form.ShowDialog();
+
+            if (!form.Cancel)
+            {
+                QualityModel quality = _service.Quality[_selectedIndex];
+                quality.ActiveDataFields = form.Fields;
+                quality.Modified = true;
+                if (_qualityDataMV != null)
+                    _qualityDataMV.RefreshQualityData(quality);
+            }
+        }
+
+        internal void Settings()
+        {
+            SettingForm form = new SettingForm();
+            _ = form.ShowDialog();
         }
 
         #endregion

@@ -9,7 +9,7 @@ namespace Quality_Control.Service
     {
         private readonly ProductRepository _repository = new ProductRepository();
         private readonly List<ProductModel> Products;
-        
+
         public List<ProductModel> FilteredProducts { get; set; }
 
         public ProductService()
@@ -27,7 +27,24 @@ namespace Quality_Control.Service
                     .Where(x => x.Name.ToLower().Contains(name))
                     .OrderBy(x => x.Name)
                     .ToList();
-                FilteredProducts = result; // newList;
+                FilteredProducts = result;
+            }
+            else
+            {
+                FilteredProducts = Products;
+            }
+        }
+
+        public void Filter(int number, string name)
+        {
+            if (number > 0 || !string.IsNullOrEmpty(name))
+            {
+                List<ProductModel> result = Products
+                    .Where(x => x.LabBookId >= number)
+                    .Where(x => x.Name.ToLower().Contains(name))
+                    .OrderBy(x => x.Name)
+                    .ToList();
+                FilteredProducts = result;
             }
             else
             {

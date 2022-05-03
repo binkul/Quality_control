@@ -51,7 +51,7 @@ namespace Quality_Control.Service
 
         public SortableObservableCollection<QualityModel> GetAllQuality(int year)
         {
-            var list = _repository.GetAllByYear(year);
+            SortableObservableCollection<QualityModel> list = _repository.GetAllByYear(year);
             list.Sort(x => x.Number, ListSortDirection.Ascending);
             return list;
         }

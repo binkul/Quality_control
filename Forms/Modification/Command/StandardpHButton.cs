@@ -1,4 +1,4 @@
-﻿using Quality_Control.Forms.Quality.ModelView;
+﻿using Quality_Control.Forms.Modification.ModelView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Quality_Control.Forms.Quality.Command
+namespace Quality_Control.Forms.Modification.Command
 {
-    internal class AddNewButton : ICommand
+    internal class StandardpHButton : ICommand
     {
-        private readonly QualityMV _modelView;
+        private readonly ModificationMV _modelView;
 
-        public AddNewButton(QualityMV modelView)
+        public StandardpHButton(ModificationMV modelView)
         {
             if (modelView == null) throw new ArgumentNullException("Model widoku jest null");
             _modelView = modelView;
@@ -37,7 +37,7 @@ namespace Quality_Control.Forms.Quality.Command
 
         public void Execute(object parameter)
         {
-            _modelView.AddNew();
+            _modelView.StandardpH();
         }
     }
 }

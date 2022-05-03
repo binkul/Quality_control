@@ -112,7 +112,8 @@
                     </RibbonButton>
                 </RibbonGroup>
                 <RibbonGroup Header="Ustawienia" FontSize="10">
-                    <RibbonButton Label="Modyfikuj" LargeImageSource="/Img/Modify.png" FontWeight="Regular">
+                    <RibbonButton Label="Modyfikuj" LargeImageSource="/Img/Modify.png" FontWeight="Regular"
+                                  Command="{Binding ModificationButton}">
                         <RibbonButton.ToolTip >
                             <ToolTip Background="Yellow">
                                 <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
@@ -121,7 +122,8 @@
                             </ToolTip>
                         </RibbonButton.ToolTip>
                     </RibbonButton>
-                    <RibbonButton Label="Ustawienia" LargeImageSource="/Img/Settings.png" FontWeight="Regular">
+                    <RibbonButton Label="Ustawienia" LargeImageSource="/Img/Settings.png" FontWeight="Regular"
+                                  Command="{Binding SettingsButton}">
                         <RibbonButton.ToolTip >
                             <ToolTip Background="Yellow">
                                 <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
@@ -202,8 +204,8 @@
 
                 <DataGrid.Columns>
                     
-                    <DataGridTextColumn x:Name="ColNumber" Binding="{Binding Id}" Visibility="Collapsed" />
-                    <DataGridTextColumn x:Name="ColId" Binding="{Binding Number}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColId" Binding="{Binding Id}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="ColNumber" Binding="{Binding Number}" Visibility="Collapsed" />
                     <DataGridTextColumn x:Name="ColProductIndex" Binding="{Binding ProductIndex}" Visibility="Collapsed" />
                     <DataGridTextColumn x:Name="ColLabbokId" Binding="{Binding LabBookId}" Visibility="Collapsed" />
                     <DataGridTextColumn x:Name="ColRemarks" Binding="{Binding Remarks}" Visibility="Collapsed" />

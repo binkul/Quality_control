@@ -80,6 +80,7 @@
     <Compile Include="Commons\DbResponse.cs" />
     <Compile Include="Commons\DefaultData.cs" />
     <Compile Include="Commons\IRepository.cs" />
+    <Compile Include="Commons\QualityFields.cs" />
     <Compile Include="Commons\RepositoryCommon.cs" />
     <Compile Include="Commons\SortableObservableCollection.cs" />
     <Compile Include="Commons\SortedList.cs" />
@@ -95,6 +96,10 @@
     </Compile>
     <Compile Include="Forms\AddNew\ModelView\AddNewMV.cs" />
     <Compile Include="Forms\AddNew\Model\ProductModel.cs" />
+    <Compile Include="Forms\Modification\Command\DeleteButton.cs" />
+    <Compile Include="Forms\Modification\Command\SetButton.cs" />
+    <Compile Include="Forms\Modification\Command\StandardButton.cs" />
+    <Compile Include="Forms\Modification\Command\StandardpHButton.cs" />
     <Compile Include="Forms\Modification\ModelView\ModificationMV.cs" />
     <Compile Include="Forms\Modification\Model\ModificationModel.cs" />
     <Compile Include="Forms\Modification\ModificationForm.xaml.cs">
@@ -109,7 +114,9 @@
     <Compile Include="Forms\Quality\Command\AddNewButton.cs" />
     <Compile Include="Forms\Quality\Command\DeleteButton.cs" />
     <Compile Include="Forms\Quality\Command\DeleteQualityDataButton.cs" />
+    <Compile Include="Forms\Quality\Command\ModificationButton.cs" />
     <Compile Include="Forms\Quality\Command\SaveButton.cs" />
+    <Compile Include="Forms\Quality\Command\SettingsButton.cs" />
     <Compile Include="Forms\Quality\ModelView\QualityDataMV.cs" />
     <Compile Include="Forms\Quality\ModelView\QualityMV.cs" />
     <Compile Include="Forms\Quality\Model\QualityModel.cs" />
@@ -121,6 +128,10 @@
     <Compile Include="Forms\Register\RegisterForm.xaml.cs">
       <DependentUpon>RegisterForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Setting\ModelView\SettingMV.cs" />
+    <Compile Include="Forms\Setting\SettingForm.xaml.cs">
+      <DependentUpon>SettingForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Tools\WindowsOperation.cs" />
     <Compile Include="Repository\ProductRepository.cs" />
     <Compile Include="Repository\QualityDataRepository.cs" />
@@ -129,6 +140,7 @@
     <Compile Include="Security\Encrypt.cs" />
     <Compile Include="Security\User.cs" />
     <Compile Include="Security\UserSingleton.cs" />
+    <Compile Include="Service\ModificationService.cs" />
     <Compile Include="Service\ProductService.cs" />
     <Compile Include="Service\QualityDataService.cs" />
     <Compile Include="Service\QualityService.cs" />
@@ -187,6 +199,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Forms\Setting\SettingForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Img\Ok-icon.png" />
@@ -230,5 +246,12 @@
   <ItemGroup>
     <Resource Include="Forms\AddNew\Ok-icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\mark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\copy.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

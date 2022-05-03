@@ -9,8 +9,8 @@ namespace Quality_Control.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var name = parameter.ToString();
-            var columns = value as List<string>;
+            string name = parameter.ToString();
+            List<string> columns = value as List<string>;
 
             if (columns.Contains(name))
                 return System.Windows.Visibility.Visible;

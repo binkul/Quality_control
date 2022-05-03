@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Quality_Control.Forms.Modification.ModelView;
+using Quality_Control.Forms.Quality.Model;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Quality_Control.Forms.Modification
 {
@@ -19,9 +9,29 @@ namespace Quality_Control.Forms.Modification
     /// </summary>
     public partial class ModificationForm : Window
     {
-        public ModificationForm()
+        private QualityModel _quality;
+        public bool Cancel { get; private set; } = true;
+        public string Fields { get; private set; } = "";
+
+        public ModificationForm(QualityModel quality)
         {
+            _quality = quality;
+            Fields = _quality.ActiveDataFields;
             InitializeComponent();
+            Height = SystemParameters.PrimaryScreenHeight - 100;
+            ProductNameLbl.Content = "P" + quality.Number + " " + quality.ProductName;
+
+            ModificationMV view = (ModificationMV)DataContext;
+            view.Quality = _quality;
+            view.InitiateFields();
+        }
+
+        private void RibbonButton_Click(object sender, RoutedEventArgs e)
+        {
+            ModificationMV view = (ModificationMV)DataContext;
+            Fields = view.SettingFields;
+            Cancel = false;
+            Close();
         }
     }
 }
