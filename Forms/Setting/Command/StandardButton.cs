@@ -1,14 +1,14 @@
-﻿using Quality_Control.Forms.Modification.ModelView;
+﻿using Quality_Control.Forms.Setting.ModelView;
 using System;
 using System.Windows.Input;
 
-namespace Quality_Control.Forms.Modification.Command
+namespace Quality_Control.Forms.Setting.Command
 {
     internal class StandardButton : ICommand
     {
-        private readonly ModificationMV _modelView;
+        private readonly SettingMV _modelView;
 
-        public StandardButton(ModificationMV modelView)
+        public StandardButton(SettingMV modelView)
         {
             if (modelView == null) throw new ArgumentNullException("Model widoku jest null");
             _modelView = modelView;

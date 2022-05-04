@@ -1,9 +1,5 @@
 ﻿using Quality_Control.Forms.Modification.ModelView;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Quality_Control.Forms.Modification.Command

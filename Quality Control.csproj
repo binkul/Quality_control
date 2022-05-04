@@ -128,6 +128,12 @@
     <Compile Include="Forms\Register\RegisterForm.xaml.cs">
       <DependentUpon>RegisterForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Setting\Command\CopyButton.cs" />
+    <Compile Include="Forms\Setting\Command\DeleteButton.cs" />
+    <Compile Include="Forms\Setting\Command\SaveButton.cs" />
+    <Compile Include="Forms\Setting\Command\SetButton.cs" />
+    <Compile Include="Forms\Setting\Command\StandardButton.cs" />
+    <Compile Include="Forms\Setting\Command\StandardpHButton.cs" />
     <Compile Include="Forms\Setting\ModelView\SettingMV.cs" />
     <Compile Include="Forms\Setting\SettingForm.xaml.cs">
       <DependentUpon>SettingForm.xaml</DependentUpon>

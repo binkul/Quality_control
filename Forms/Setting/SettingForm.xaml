@@ -35,6 +35,11 @@
             <Setter Property="Padding" Value="3,0,0,0" />
             <Setter Property="FontWeight" Value="Normal" />
         </Style>
+        <Style x:Key="AllignCheckBoxCellCenter" TargetType="CheckBox">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0,0,0,0" />
+        </Style>
         <SolidColorBrush x:Key="DataGridBorderColor" Color="#FFB1AEAE"/>
     </Window.Resources>
     <DockPanel>
@@ -42,7 +47,8 @@
         <Ribbon DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">
             <RibbonTab Header="Ustawienia dla pól">
                 <RibbonGroup Header="Operacje" FontSize="10">
-                    <RibbonButton Label="Zapisz" LargeImageSource="/Img/Save.png" FontWeight="Regular" >
+                    <RibbonButton Label="Zapisz" LargeImageSource="/Img/Save.png" FontWeight="Regular" 
+                                  Command="{Binding SaveButton}">
                         <RibbonButton.ToolTip >
                             <ToolTip Background="Yellow">
                                 <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
@@ -72,7 +78,7 @@
                         </RibbonButton.ToolTip>
                     </RibbonButton>
                     <RibbonButton Label="Standard + pH" LargeImageSource="/Img/mark.png" FontWeight="Regular"
-                                  Command="{Binding StdButton}">
+                                  Command="{Binding StdWithpHButton}">
                         <RibbonButton.ToolTip >
                             <ToolTip Background="Yellow">
                                 <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
@@ -82,7 +88,7 @@
                         </RibbonButton.ToolTip>
                     </RibbonButton>
                     <RibbonButton Label="Standard" LargeImageSource="/Img/mark.png" FontWeight="Regular"
-                                  Command="{Binding StdWithpHButton}">
+                                  Command="{Binding StdButton}">
                         <RibbonButton.ToolTip >
                             <ToolTip Background="Yellow">
                                 <DockPanel Width="Auto" Height="Auto" Background="Yellow" >
@@ -200,6 +206,57 @@
                 </DataGrid.Columns>
             </DataGrid>
 
+            <!-- Visibility DataGrid -->
+            <DataGrid x:Name="DgVisibility" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Margin="2,2,2,2" AutoGenerateColumns="False" 
+                  ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow" IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
+                  CanUserAddRows="False"  CanUserResizeColumns="True" CanUserResizeRows="True" FontSize="12" HeadersVisibility="Column"
+                  HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
+                  VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
+                  ItemsSource="{Binding Fields}"
+                  SelectedIndex="0" >
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Binding="{Binding Visible}" Visibility="Collapsed" />
+                    <DataGridTextColumn Binding="{Binding Number}" Visibility="Collapsed" />
+                    <DataGridTextColumn Binding="{Binding DbName}" Visibility="Collapsed" />
+                    <DataGridTextColumn Binding="{Binding Modify}" Visibility="Collapsed" />
+
+                    <!-- Arrow selector -->
+                    <DataGridTemplateColumn HeaderStyle="{StaticResource AllignColmnHeaderCenter}" 
+                                            IsReadOnly="True" CanUserSort="False" CanUserResize="False"
+                                            Width="30">
+                        <DataGridTemplateColumn.CellTemplate >
+                            <DataTemplate>
+                                <StackPanel Background="#FFE5E5E5" Margin="-1,-1,-1,-1">
+                                    <Image x:Name="ArrowRight" Width="18" Height="16" Margin="1,1,1,1" Source="/Img/arrow-right.png" 
+                                                   Visibility="Hidden">
+                                    </Image>
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True" >
+                                        <Setter TargetName="ArrowRight" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Column name -->
+                    <DataGridTextColumn Header="Parametr" IsReadOnly="True" Width="0.75*" CanUserSort="False"
+                                        HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                        ElementStyle="{StaticResource AllignCellLeft}"
+                                        Binding="{Binding Name}">
+                    </DataGridTextColumn>
+
+                    <!-- Column visibility -->
+                    <DataGridCheckBoxColumn Header="Widoczność" Width="0.25*" CanUserSort="False"
+                                            HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
+                                            ElementStyle="{StaticResource AllignCheckBoxCellCenter}"
+                                            Binding="{Binding Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    </DataGridCheckBoxColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
 
         </Grid>
     </DockPanel>

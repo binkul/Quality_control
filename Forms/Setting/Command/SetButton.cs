@@ -1,14 +1,14 @@
-﻿using Quality_Control.Forms.Modification.ModelView;
+﻿using Quality_Control.Forms.Setting.ModelView;
 using System;
 using System.Windows.Input;
 
-namespace Quality_Control.Forms.Modification.Command
+namespace Quality_Control.Forms.Setting.Command
 {
-    internal class StandardButton : ICommand
+    internal class SetButton : ICommand
     {
-        private readonly ModificationMV _modelView;
+        private readonly SettingMV _modelView;
 
-        public StandardButton(ModificationMV modelView)
+        public SetButton(SettingMV modelView)
         {
             if (modelView == null) throw new ArgumentNullException("Model widoku jest null");
             _modelView = modelView;
@@ -28,12 +28,13 @@ namespace Quality_Control.Forms.Modification.Command
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            return _modelView.IsAnyUnset;
         }
 
         public void Execute(object parameter)
         {
-            _modelView.Standard();
+            _modelView.Set();
         }
+
     }
 }

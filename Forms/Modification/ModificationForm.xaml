@@ -99,7 +99,7 @@
         </Ribbon>
 
         <!--#### Main DataGrid -->
-        <DataGrid x:Name="DgModify" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="2,2,2,2" AutoGenerateColumns="False" 
+        <DataGrid x:Name="DgVisibility" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="2,2,2,2" AutoGenerateColumns="False" 
                   ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow" IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
                   CanUserAddRows="False"  CanUserResizeColumns="True" CanUserResizeRows="True" FontSize="12" HeadersVisibility="Column"
                   HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
@@ -108,10 +108,10 @@
                   SelectedIndex="0" >
             <DataGrid.Columns>
 
-                <DataGridTextColumn x:Name="ColVisible" Binding="{Binding Visible}" Visibility="Collapsed" />
-                <DataGridTextColumn x:Name="ColNumber" Binding="{Binding Number}" Visibility="Collapsed" />
-                <DataGridTextColumn x:Name="ColDbName" Binding="{Binding DbName}" Visibility="Collapsed" />
-                <DataGridTextColumn x:Name="ColModify" Binding="{Binding Modify}" Visibility="Collapsed" />
+                <DataGridTextColumn Binding="{Binding Visible}" Visibility="Collapsed" />
+                <DataGridTextColumn Binding="{Binding Number}" Visibility="Collapsed" />
+                <DataGridTextColumn Binding="{Binding DbName}" Visibility="Collapsed" />
+                <DataGridTextColumn Binding="{Binding Modify}" Visibility="Collapsed" />
 
                 <!-- Arrow selector -->
                 <DataGridTemplateColumn x:Name="ColStatus" HeaderStyle="{StaticResource AllignColmnHeaderCenter}" 
@@ -149,5 +149,6 @@
                 
             </DataGrid.Columns>
         </DataGrid>
+        
     </DockPanel>
 </Window>

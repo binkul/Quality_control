@@ -36,11 +36,22 @@ namespace Quality_Control.Service
             }
         }
 
+        internal void UnModifiedAll()
+        {
+            foreach (ModificationModel model in Fields)
+            {
+                model.Modify = false;
+            }
+        }
+
         internal void UnsetFields()
         {
             foreach (ModificationModel model in Fields)
             {
-                model.Visible = false;
+                if (model.DbName.Equals("measure_date"))
+                    model.Visible = true;
+                else
+                    model.Visible = false;
             }
         }
 
