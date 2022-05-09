@@ -15,10 +15,12 @@ namespace Quality_Control.Repository
     {
         private readonly string _getAllActiveProductQuery = "Select p.id, p.labbook_id, p.name, p.hp_index, p.description, p.is_danger, " +
             "p.is_archive, p.is_experimetPhase, p.product_price_id, p.product_type_id, p.product_gloss_id, p.created, p.login_id, " +
-            "ISNULL(f.active_fields, '') as active_fields From LabBook.dbo.Product p Left Join QualityControlFields f On p.labbook_id=f.labbook_id " +
+            "ISNULL(f.active_fields, '') as active_fields From LabBook.dbo.Product p Left Join LabBook.dbo.QualityControlFields f On p.labbook_id=f.labbook_id " +
             "Where is_archive= 'false' AND is_experimetPhase = 'false' Order By name";
         private readonly string _existActiveFieldsQuary = "Select Count(*) as num From LabBook.dbo.QualityControlFields Where labbook_id=";
         private readonly string _getActiveFieldsQuery = "Select active_fields From LabBook.dbo.QualityControlFields Where labbook_id=";
+        private readonly string _saveNewActiveFieldsQuery = "Insert Into LabBook.dbo.QualityControlFields(labbook_id, active_fields) Values(@labbook_id, @active_fields)";
+        private readonly string _updateActiveFieldsQuery = "Update LabBook.dbo.QualityControlFields Set active_fields=@active_fields Where labbook_id=@labbook_id";
 
         public List<ProductModel> GetOnlyActiveProduct()
         {
@@ -142,5 +144,69 @@ namespace Quality_Control.Repository
             return fields != null ? fields.ToString() : "";
         }
 
+        public bool SaveFields(string fields, long labBookId)
+        {
+            bool result = true;
+            SqlConnection connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString());
+            SqlCommand cmd = new SqlCommand();
+
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = _saveNewActiveFieldsQuery;
+                _ = cmd.Parameters.AddWithValue("@labbook_id", labBookId);
+                _ = cmd.Parameters.AddWithValue("@active_fields", fields);
+
+                connection.Open();
+                _ = cmd.ExecuteNonQuery();
+                connection.Close();
+            }
+            catch (SqlException ex)
+            {
+                _ = MessageBox.Show("Problem z zapisem do tabeli QualityControlFields (Save) - błąd w kwerendzie lub brak połaczenia z serwerem: '" + ex.Message + "'.",
+                    "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd Save do QualityControlFields",
+                    "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+
+            return result;
+        }
+
+        public bool UpdateFields(string fields, long labBookId)
+        {
+            bool result = true;
+            SqlConnection connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString());
+            SqlCommand cmd = new SqlCommand();
+
+            try
+            {
+                cmd.Connection = connection;
+                cmd.CommandText = _updateActiveFieldsQuery;
+                _ = cmd.Parameters.AddWithValue("@labbook_id", labBookId);
+                _ = cmd.Parameters.AddWithValue("@active_fields", fields);
+
+                connection.Open();
+                _ = cmd.ExecuteNonQuery();
+                connection.Close();
+            }
+            catch (SqlException ex)
+            {
+                _ = MessageBox.Show("Problem z aktualizacją tabeli QualityControlFields (Update) - błąd w kwerendzie lub brak połaczenia z serwerem: '" + ex.Message + "'.",
+                    "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd Update do QualityControlFields",
+                    "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            return result;
+        }
     }
 }

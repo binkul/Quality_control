@@ -7,6 +7,7 @@ using Quality_Control.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -66,8 +67,7 @@ namespace Quality_Control.Forms.Setting.ModelView
             {
                 if (_serviceMod.Modified)
                 {
-                    string newFields = _serviceMod.RecalculateFields();
-                    Products[_selectedIndex].ActiveFields = newFields;
+                    Products[_selectedIndex].ActiveFields = _serviceMod.RecalculateFields();
                 }
                 _selectedIndex = value;
                 _serviceMod.UnsetFields();
@@ -133,7 +133,20 @@ namespace Quality_Control.Forms.Setting.ModelView
 
         internal void Save()
         {
+            if (_serviceMod.Modified)
+            {
+                Products[_selectedIndex].ActiveFields = _serviceMod.RecalculateFields();
+                _serviceMod.UnModifiedAll();
+            }
 
+            List<ProductModel> list = Products
+                .Where(x => x.Modified)
+                .ToList();
+
+            if (list != null && list.Count > 0)
+            {
+                _ = _service.Save(list);
+            }
         }
 
         internal void Copy()

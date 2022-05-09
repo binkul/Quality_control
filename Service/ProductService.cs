@@ -53,5 +53,26 @@ namespace Quality_Control.Service
                 FilteredProducts = Products;
             }
         }
+
+        public bool Save(List<ProductModel> products)
+        {
+            foreach(ProductModel product in products)
+            {
+                if (!_repository.ExistFieldsByLabBookId(product.LabBookId))
+                {
+                    if (!_repository.SaveFields(product.ActiveFields, product.LabBookId))
+                        return false;
+                    product.Modified = false;
+                }
+                else
+                {
+                    if (!_repository.UpdateFields(product.ActiveFields, product.LabBookId))
+                        return false;
+                    product.Modified = false;
+                }
+            }
+
+            return true;
+        }
     }
 }
