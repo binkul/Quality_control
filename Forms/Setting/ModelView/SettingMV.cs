@@ -57,19 +57,22 @@ namespace Quality_Control.Forms.Setting.ModelView
 
         internal bool IsAnyUnset => _serviceMod.IsAnyUnSet;
 
-        internal bool Modified => _serviceMod.Modified;
+        internal bool Modified => _serviceMod.Modified || _service.Modified;
 
         public int SelectedIndex
         {
             get => _selectedIndex;
             set
             {
+                if (_serviceMod.Modified)
+                {
+                    string newFields = _serviceMod.RecalculateFields();
+                    Products[_selectedIndex].ActiveFields = newFields;
+                }
                 _selectedIndex = value;
                 _serviceMod.UnsetFields();
-                QualityRepository repository = new QualityRepository();
-                string activeFields = repository.GetActiveFieldsByLabBookId(Products[_selectedIndex].LabBookId);
-                if (!string.IsNullOrEmpty(activeFields))
-                    _serviceMod.CheckFieldsInList(activeFields);
+                if (!string.IsNullOrEmpty(Products[_selectedIndex].ActiveFields))
+                    _serviceMod.CheckFieldsInList(Products[_selectedIndex].ActiveFields);
                 _serviceMod.UnModifiedAll();
             }
         }
@@ -135,7 +138,7 @@ namespace Quality_Control.Forms.Setting.ModelView
 
         internal void Copy()
         {
-
+            _serviceMod.Copy();
         }
 
         internal void Delete()

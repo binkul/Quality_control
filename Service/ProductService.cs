@@ -18,6 +18,8 @@ namespace Quality_Control.Service
             FilteredProducts = Products;
         }
 
+        public bool Modified => Products.Any(x => x.Modified);
+
         public void Filter(string index, string name)
         {
             if (!string.IsNullOrEmpty(index) || !string.IsNullOrEmpty(name))
