@@ -51,7 +51,7 @@ namespace Quality_Control.Repository
                             int glossId = reader.GetInt32(10);
                             DateTime date = reader.GetDateTime(11);
                             int loginId = reader.GetInt32(12);
-                            string fields = reader.GetValue(13).Equals(DBNull.Value) ? reader.GetString(13) : "";
+                            string fields = !reader.GetValue(13).Equals(DBNull.Value) ? reader.GetString(13) : "";
 
                             ProductModel product = new ProductModel(id, labBookId, name, index, description, isDanger, 
                                 isArchive, isExperiment, priceId, typeId, glossId, date, loginId, fields);

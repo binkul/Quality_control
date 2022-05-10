@@ -4,11 +4,11 @@ using System.Windows.Input;
 
 namespace Quality_Control.Forms.Setting.Command
 {
-    internal class SaveButton : ICommand
+    internal class SaveFieldsButton : ICommand
     {
         private readonly SettingMV _modelView;
 
-        public SaveButton(SettingMV modelView)
+        public SaveFieldsButton(SettingMV modelView)
         {
             if (modelView == null) throw new ArgumentNullException("Model widoku jest null");
             _modelView = modelView;

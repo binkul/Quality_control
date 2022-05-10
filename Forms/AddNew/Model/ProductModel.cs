@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace Quality_Control.Forms.AddNew.Model
 {
-    public class ProductModel : INotifyPropertyChanged
+    public class ProductModel // : INotifyPropertyChanged
     {
         public long Id { get; set; } = -1;
         public long LabBookId { get; set; } = 1;
@@ -23,7 +23,7 @@ namespace Quality_Control.Forms.AddNew.Model
         public bool Modified { get; set; } = false;
         private string _activeFields = DefaultData.DefaultDataFields;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        //public event PropertyChangedEventHandler PropertyChanged;
 
         public ProductModel(long id, long labBookId, string name, string index, string description, bool isDanger, 
             bool isArchive, bool isExperiment, int priceId, int typeId, int glossId, DateTime created, long loginId, string fields)
@@ -87,13 +87,12 @@ namespace Quality_Control.Forms.AddNew.Model
                    TypeId == model.TypeId &&
                    GlossId == model.GlossId &&
                    Created == model.Created &&
-                   _activeFields == model.ActiveFields &&
                    LoginId == model.LoginId;
         }
 
         public override int GetHashCode()
         {
-            int hashCode = 443001982;
+            int hashCode = -735400064;
             hashCode = hashCode * -1521134295 + Id.GetHashCode();
             hashCode = hashCode * -1521134295 + LabBookId.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
@@ -106,7 +105,6 @@ namespace Quality_Control.Forms.AddNew.Model
             hashCode = hashCode * -1521134295 + TypeId.GetHashCode();
             hashCode = hashCode * -1521134295 + GlossId.GetHashCode();
             hashCode = hashCode * -1521134295 + Created.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(_activeFields);
             hashCode = hashCode * -1521134295 + LoginId.GetHashCode();
             return hashCode;
         }

@@ -54,10 +54,12 @@ namespace Quality_Control.Service
             }
         }
 
-        public bool Save(List<ProductModel> products)
+        public bool Save()
         {
-            foreach(ProductModel product in products)
+            foreach(ProductModel product in Products)
             {
+                if (!product.Modified) continue;
+
                 if (!_repository.ExistFieldsByLabBookId(product.LabBookId))
                 {
                     if (!_repository.SaveFields(product.ActiveFields, product.LabBookId))

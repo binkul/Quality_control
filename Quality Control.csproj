@@ -148,7 +148,7 @@
     </Compile>
     <Compile Include="Forms\Setting\Command\CopyButton.cs" />
     <Compile Include="Forms\Setting\Command\DeleteButton.cs" />
-    <Compile Include="Forms\Setting\Command\SaveButton.cs" />
+    <Compile Include="Forms\Setting\Command\SaveFieldsButton.cs" />
     <Compile Include="Forms\Setting\Command\SetButton.cs" />
     <Compile Include="Forms\Setting\Command\StandardButton.cs" />
     <Compile Include="Forms\Setting\Command\StandardpHButton.cs" />

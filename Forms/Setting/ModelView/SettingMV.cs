@@ -2,12 +2,10 @@
 using Quality_Control.Forms.AddNew.Model;
 using Quality_Control.Forms.Modification.Model;
 using Quality_Control.Forms.Setting.Command;
-using Quality_Control.Repository;
 using Quality_Control.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -26,7 +24,6 @@ namespace Quality_Control.Forms.Setting.ModelView
         private readonly double _startLeftPosition = 32;
         private readonly ProductService _service = new ProductService();
         private readonly ModificationService _serviceMod = new ModificationService();
-        public ProductModel ActualProduct { get; set; }
         private int _selectedIndex;
         public RelayCommand<TextChangedEventArgs> OnProductNameFilterTextChanged { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNumberFilterTextChanged { get; set; }
@@ -50,6 +47,8 @@ namespace Quality_Control.Forms.Setting.ModelView
 
         public List<ProductModel> Products => _service.FilteredProducts;
 
+        public bool IsAnyProduct => Products.Count > 0;
+
         public List<ModificationModel> Fields => _serviceMod.Fields;
 
         public Thickness TxtIndexLeftPosition => new Thickness(_startLeftPosition, 0, 0, 5);
@@ -71,9 +70,10 @@ namespace Quality_Control.Forms.Setting.ModelView
                 }
                 _selectedIndex = value;
                 _serviceMod.UnsetFields();
-                if (!string.IsNullOrEmpty(Products[_selectedIndex].ActiveFields))
+                if (IsAnyProduct && !string.IsNullOrEmpty(Products[_selectedIndex].ActiveFields))
                     _serviceMod.CheckFieldsInList(Products[_selectedIndex].ActiveFields);
                 _serviceMod.UnModifiedAll();
+                OnPropertyChanged(nameof(IsAnyProduct));
             }
         }
 
@@ -81,7 +81,7 @@ namespace Quality_Control.Forms.Setting.ModelView
         {
             get
             {
-                if (_saveButton == null) _saveButton = new SaveButton(this);
+                if (_saveButton == null) _saveButton = new SaveFieldsButton(this);
                 return _saveButton;
             }
         }
@@ -135,18 +135,11 @@ namespace Quality_Control.Forms.Setting.ModelView
         {
             if (_serviceMod.Modified)
             {
-                Products[_selectedIndex].ActiveFields = _serviceMod.RecalculateFields();
+                Products[SelectedIndex].ActiveFields = _serviceMod.RecalculateFields();
                 _serviceMod.UnModifiedAll();
             }
 
-            List<ProductModel> list = Products
-                .Where(x => x.Modified)
-                .ToList();
-
-            if (list != null && list.Count > 0)
-            {
-                _ = _service.Save(list);
-            }
+            _service.Save();
         }
 
         internal void Copy()
@@ -187,6 +180,7 @@ namespace Quality_Control.Forms.Setting.ModelView
             int number = !string.IsNullOrEmpty(NumberFilterTxt) ? Convert.ToInt32(NumberFilterTxt) : -1;
             _service.Filter(number, FilterNameTxt);
             OnPropertyChanged(nameof(Products));
+            SelectedIndex = 0;
         }
 
         public void OnProductIndexTextChangedFilter(TextChangedEventArgs e)
@@ -194,6 +188,7 @@ namespace Quality_Control.Forms.Setting.ModelView
             int number = !string.IsNullOrEmpty(NumberFilterTxt) ? Convert.ToInt32(NumberFilterTxt) : -1;
             _service.Filter(number, FilterNameTxt);
             OnPropertyChanged(nameof(Products));
+            SelectedIndex = 0;
         }
 
         #endregion
