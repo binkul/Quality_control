@@ -1,4 +1,4 @@
-﻿<Window x:Class="Quality_Control.Forms.Setting.SettingForm"
+﻿<RibbonWindow x:Class="Quality_Control.Forms.Setting.SettingForm"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -44,6 +44,13 @@
         </Style>
         <SolidColorBrush x:Key="DataGridBorderColor" Color="#FFB1AEAE"/>
     </Window.Resources>
+    <i:Interaction.Triggers>
+        <!-- Closing Form event -->
+        <i:EventTrigger EventName="Closing">
+            <cmd:EventToCommand Command="{Binding OnClosingCommand}" PassEventArgsToCommand="True" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <DockPanel>
 
         <Ribbon DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">
@@ -262,4 +269,4 @@
 
         </Grid>
     </DockPanel>
-</Window>
+</RibbonWindow>

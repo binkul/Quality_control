@@ -135,6 +135,7 @@
     <Compile Include="Forms\Quality\Command\ModificationButton.cs" />
     <Compile Include="Forms\Quality\Command\SaveButton.cs" />
     <Compile Include="Forms\Quality\Command\SettingsButton.cs" />
+    <Compile Include="Forms\Quality\Command\StatisticButton.cs" />
     <Compile Include="Forms\Quality\ModelView\QualityDataMV.cs" />
     <Compile Include="Forms\Quality\ModelView\QualityMV.cs" />
     <Compile Include="Forms\Quality\Model\QualityModel.cs" />
@@ -155,6 +156,10 @@
     <Compile Include="Forms\Setting\ModelView\SettingMV.cs" />
     <Compile Include="Forms\Setting\SettingForm.xaml.cs">
       <DependentUpon>SettingForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Statistic\ModelView\StatisticMV.cs" />
+    <Compile Include="Forms\Statistic\StatisticForm.xaml.cs">
+      <DependentUpon>StatisticForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Tools\WindowsOperation.cs" />
     <Compile Include="Repository\ProductRepository.cs" />
@@ -231,6 +236,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Forms\Statistic\StatisticForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Img\Ok-icon.png" />
@@ -272,9 +281,6 @@
     <Resource Include="Img\arrow-right_last.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Forms\AddNew\Ok-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Img\mark.png" />
   </ItemGroup>
   <ItemGroup>
@@ -295,5 +301,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

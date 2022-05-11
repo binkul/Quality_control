@@ -1,13 +1,14 @@
 ﻿using Quality_Control.Forms.Modification.ModelView;
 using Quality_Control.Forms.Quality.Model;
 using System.Windows;
+using System.Windows.Controls.Ribbon;
 
 namespace Quality_Control.Forms.Modification
 {
     /// <summary>
     /// Logika interakcji dla klasy ModificationForm.xaml
     /// </summary>
-    public partial class ModificationForm : Window
+    public partial class ModificationForm : RibbonWindow
     {
         private QualityModel _quality;
         public bool Cancel { get; private set; } = true;

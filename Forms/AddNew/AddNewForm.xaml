@@ -12,7 +12,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:cmd="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
-        Title="Nowa produkcja" Height="600" Width="800" Icon="Ok-icon.png" WindowStartupLocation="CenterScreen" >
+        Title="Nowa produkcja" Height="600" Width="800" Icon="/img/Ok-icon.png" WindowStartupLocation="CenterScreen" >
     <Window.DataContext>
         <vm:AddNewMV />
     </Window.DataContext>
@@ -43,11 +43,12 @@
         </Style>
         <SolidColorBrush x:Key="DataGridBorderColor" Color="#FFB1AEAE"/>
     </Window.Resources>
-    
+
     <Grid Background="#FFE5E5E5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="357*" />
+            <ColumnDefinition Width="40*"/>
+            <ColumnDefinition Width="397*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
@@ -60,12 +61,12 @@
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,396.6,0.4" >
             <Label Content="Informacje o produkcji" FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="Blue" />
         </StackPanel>
 
-        <!-- Production number and date 'SelectedDate="{x:Static sys:DateTime.Now}"' -->    
-        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+        <!-- Production number and date 'SelectedDate="{x:Static sys:DateTime.Now}"' -->
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,30,-0.4,0.4" Grid.RowSpan="2">
             <Label Content="Nr produkcji:" FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="Black" />
             <TextBox FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Width="100" 
                      PreviewTextInput="Number_PreviewTextInput"
@@ -83,20 +84,20 @@
                 </i:Interaction.Behaviors>
             </DatePicker>
         </StackPanel>
-        
+
         <!-- Border around 'Informacje o produkcji' and Nr produkcji  -->
-        <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="1,1,1,1" BorderThickness="1" CornerRadius="5,5,0,0">
+        <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Margin="1,1,0.6,1.4" BorderThickness="1" CornerRadius="5,5,0,0">
             <Border.BorderBrush>
                 <SolidColorBrush Color="#7F4F4F51" Opacity="0.5"/>
             </Border.BorderBrush>
         </Border>
 
-        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3" >
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,4.6,396.6,34.4" Grid.RowSpan="3" >
             <Label Content="Wyroby" FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="Blue" />
         </StackPanel>
 
         <!-- Filtering -->
-        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" >
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Margin="0,0.8,-0.4,366.6" Grid.RowSpan="2" >
             <TextBox x:Name="IndexFilter" FontSize="14" VerticalAlignment="Bottom"
                      Margin="{Binding TxtIndexLeftPosition}"
                      Text="{Binding IndexFilterTxt, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
@@ -125,7 +126,7 @@
         </StackPanel>
 
         <!-- Main DataGrid -->
-        <DataGrid x:Name="DgProduct" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Margin="2,2,2,2" AutoGenerateColumns="False" 
+        <DataGrid x:Name="DgProduct" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" Margin="2,3,2,0" AutoGenerateColumns="False" 
                   ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow" IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
                   CanUserAddRows="False"  CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column" IsReadOnly="True" 
                   SelectionChanged="DgProduct_SelectionChanged"
@@ -162,7 +163,7 @@
                 </DataGridTemplateColumn>
 
                 <!-- Index column -->
-                <DataGridTextColumn x:Name="ColIndex" Header="Nr" IsReadOnly="True" Width="0.2*" CanUserSort="False"
+                <DataGridTextColumn x:Name="ColIndex" Header="Indeks" IsReadOnly="True" Width="0.2*" CanUserSort="False"
                                         HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
                                         ElementStyle="{StaticResource AllignCellCenter}"
                                         Binding="{Binding Index}">
@@ -179,7 +180,7 @@
         </DataGrid>
 
         <!-- Accept and Cancel button -->
-        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Center">
             <Button x:Name="AcceptButton" Content="Ok" Width="70" FontSize="14" FontWeight="Bold" Foreground="Blue"
                     Margin="0,0,10,0" Click="AcceptButton_Click"/>
             <Button x:Name="CancelButton" Content="Anuluj" Width="70" FontSize="14" FontWeight="Bold" Foreground="Red"
@@ -187,14 +188,14 @@
         </StackPanel>
 
         <!-- Border around 'Informacje o produkcji' and Nr produkcji  -->
-        <Border Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Grid.RowSpan="4" Margin="1,1,1,1" BorderThickness="1" CornerRadius="0,0,5,5">
+        <Border Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Grid.RowSpan="4" Margin="1,0.8,0.6,1.6" BorderThickness="1" CornerRadius="0,0,5,5">
             <Border.BorderBrush>
                 <SolidColorBrush Color="#7F4F4F51" Opacity="0.5"/>
             </Border.BorderBrush>
         </Border>
 
         <!-- Navigation -->
-        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="7" Grid.RowSpan="3" >
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="7" Grid.RowSpan="2" Grid.ColumnSpan="3" >
 
             <Button  x:Name="BtnNaviLeftFirst" Height="20" Width="20" Tag="first" Margin="5,0,0,0" 
                          Command="{Binding MoveFirst, Source={StaticResource navi}}">

@@ -25,11 +25,13 @@ namespace Quality_Control.Forms.Setting.ModelView
         private readonly ProductService _service = new ProductService();
         private readonly ModificationService _serviceMod = new ModificationService();
         private int _selectedIndex;
+        public RelayCommand<CancelEventArgs> OnClosingCommand { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNameFilterTextChanged { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductNumberFilterTextChanged { get; set; }
 
         public SettingMV()
         {
+            OnClosingCommand = new RelayCommand<CancelEventArgs>(OnClosingCommandExecuted);
             OnProductNameFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductNameTextChangedFilter);
             OnProductNumberFilterTextChanged = new RelayCommand<TextChangedEventArgs>(OnProductIndexTextChangedFilter);
         }
@@ -42,6 +44,25 @@ namespace Quality_Control.Forms.Setting.ModelView
             {
                 foreach (string name in names)
                     PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        private void OnClosingCommandExecuted(CancelEventArgs e)
+        {
+            MessageBoxResult ansver = MessageBoxResult.No;
+
+            if (Modified)
+            {
+                ansver = MessageBox.Show("Dokonano zmian w wyrobach. Czy zapisać zmiany?", "Zapis zmian", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            }
+
+            if (ansver == MessageBoxResult.Yes)
+            {
+                Save();
+            }
+            else if (ansver == MessageBoxResult.Cancel)
+            {
+                e.Cancel = true;
             }
         }
 

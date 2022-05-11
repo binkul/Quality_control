@@ -3,6 +3,7 @@ using Quality_Control.Forms.Quality.ModelView;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
 
 namespace Quality_Control.Forms.Quality
@@ -10,7 +11,7 @@ namespace Quality_Control.Forms.Quality
     /// <summary>
     /// Logika interakcji dla klasy QualityForm.xaml
     /// </summary>
-    public partial class QualityForm : Window
+    public partial class QualityForm : RibbonWindow
     {
         public QualityForm()
         {

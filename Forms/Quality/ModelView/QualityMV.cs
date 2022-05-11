@@ -6,6 +6,7 @@ using Quality_Control.Forms.Navigation;
 using Quality_Control.Forms.Quality.Command;
 using Quality_Control.Forms.Quality.Model;
 using Quality_Control.Forms.Setting;
+using Quality_Control.Forms.Statistic;
 using Quality_Control.Security;
 using Quality_Control.Service;
 using System;
@@ -24,6 +25,7 @@ namespace Quality_Control.Forms.Quality.ModelView
         private ICommand _addNewButton;
         private ICommand _modificationButton;
         private ICommand _settingsButton;
+        private ICommand _statisticButton;
 
         private readonly double _startLeftPosition = 32;
         private readonly WindowData _windowData = WindowSettings.Read();
@@ -93,7 +95,7 @@ namespace Quality_Control.Forms.Quality.ModelView
 
             if (Modified)
             {
-                ansver = MessageBox.Show("Dokonano zmian w rekordach. Czy zapisać zmiany?", "Zamis zmian", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                ansver = MessageBox.Show("Dokonano zmian w rekordach. Czy zapisać zmiany?", "Zapis zmian", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
             }
 
             if (ansver == MessageBoxResult.Yes)
@@ -332,6 +334,16 @@ namespace Quality_Control.Forms.Quality.ModelView
 
         }
 
+        public ICommand StatisticButton
+        {
+            get
+            {
+                if (_statisticButton == null) _statisticButton = new StatisticButton(this);
+                return _statisticButton;
+            }
+
+        }
+
         internal bool SaveQuality()
         {
             if (!ModifiedQuality) return false;
@@ -425,6 +437,12 @@ namespace Quality_Control.Forms.Quality.ModelView
         internal void Settings()
         {
             SettingForm form = new SettingForm();
+            _ = form.ShowDialog();
+        }
+
+        internal void StatisticOpen()
+        {
+            StatisticForm form = new StatisticForm();
             _ = form.ShowDialog();
         }
 

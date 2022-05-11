@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
 
 namespace Quality_Control.Forms.Setting
@@ -7,7 +8,7 @@ namespace Quality_Control.Forms.Setting
     /// <summary>
     /// Logika interakcji dla klasy SettingForm.xaml
     /// </summary>
-    public partial class SettingForm : Window
+    public partial class SettingForm : RibbonWindow
     {
         public SettingForm()
         {
