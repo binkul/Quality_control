@@ -21,6 +21,8 @@ namespace Quality_Control.Forms.Statistic.ModelView
         private int _selectedIndex;
         private string _filterIndex = "";
         private string _filterName = "";
+        public DateTime DateStart { get; set; } = DateTime.Today;
+        public DateTime DateEnd { get; set; } = DateTime.Today;
         public event PropertyChangedEventHandler PropertyChanged;
         public RelayCommand<TextChangedEventArgs> OnProductNameFilterTextChanged { get; set; }
         public RelayCommand<TextChangedEventArgs> OnProductIndexFilterTextChanged { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Quality_Control.Forms.Navigation;
 using Quality_Control.Forms.Quality.ModelView;
+using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -49,5 +50,22 @@ namespace Quality_Control.Forms.Quality
                 DgQuality.ScrollIntoView(item);
             }
         }
+
+        private void DgQualityData_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Right)
+            {
+                // Cancel [Enter] key event.
+                e.Handled = true;
+                // Press [Tab] key programatically.
+                KeyEventArgs tabKeyEvent = new KeyEventArgs(
+                  e.KeyboardDevice, e.InputSource, e.Timestamp, Key.Tab)
+                {
+                    RoutedEvent = Keyboard.KeyDownEvent
+                };
+                _ = InputManager.Current.ProcessInput(tabKeyEvent);
+            }
+        }
+
     }
 }

@@ -292,7 +292,7 @@
                       IsEnabled="{Binding IsAnyQuality, Mode=OneWay}"
                       SelectedItem="{Binding Source={StaticResource QualityData}, Path=ActualDataGridRow, Mode=OneWayToSource, Converter={StaticResource IgnoreNewItemConverter}}"
                       SelectedIndex="{Binding Source={StaticResource QualityData}, Path=DataGriddRowIndex, Mode=TwoWay, FallbackValue=0}"
-                      ItemsSource="{Binding Source={StaticResource QualityData}, Path=QualityDataView, UpdateSourceTrigger=PropertyChanged}">
+                      ItemsSource="{Binding Source={StaticResource QualityData}, Path=QualityDataView, UpdateSourceTrigger=PropertyChanged}" PreviewKeyDown="DgQualityData_PreviewKeyDown">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="InitializingNewItem">
                         <cmd:EventToCommand Command="{Binding Source={StaticResource QualityData}, Path=OnInitializingNewQualityDataCommand}" PassEventArgsToCommand="True" />

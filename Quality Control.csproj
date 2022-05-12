@@ -301,6 +301,26 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Img\today1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\today2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\today3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\calculator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\calculator1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\calculator2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Img\today1.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
