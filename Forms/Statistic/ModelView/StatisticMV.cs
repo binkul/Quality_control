@@ -137,7 +137,6 @@ namespace Quality_Control.Forms.Statistic.ModelView
             }
         }
 
-
         internal void ShowToday()
         {
             StatisticTodayForm form = new StatisticTodayForm();
