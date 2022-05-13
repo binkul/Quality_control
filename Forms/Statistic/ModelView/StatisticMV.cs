@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Quality_Control.Forms.AddNew.Model;
 using Quality_Control.Forms.Navigation;
+using Quality_Control.Forms.Statistic.Command;
 using Quality_Control.Service;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Quality_Control.Forms.Statistic.ModelView
 {
     internal class StatisticMV : INotifyPropertyChanged, INavigation
     {
+        private ICommand _todayButton;
+        private ICommand _productButton;
+        private ICommand _rangeButton;
+
         private readonly double _startLeftPosition = 32;
         private readonly ProductService _service = new ProductService();
         private NavigationMV _navigationMV;
@@ -104,5 +110,49 @@ namespace Quality_Control.Forms.Statistic.ModelView
 
         #endregion
 
+        public ICommand TodayButton
+        {
+            get
+            {
+                if (_todayButton == null) _todayButton = new TodayButton(this);
+                return _todayButton;
+            }
+        }
+
+        public ICommand ProductButton
+        {
+            get
+            {
+                if (_productButton == null) _productButton = new ProductButton(this);
+                return _productButton;
+            }
+        }
+
+        public ICommand RangeButton
+        {
+            get
+            {
+                if (_rangeButton == null) _rangeButton = new RangeButton(this);
+                return _rangeButton;
+            }
+        }
+
+
+        internal void ShowToday()
+        {
+            StatisticTodayForm form = new StatisticTodayForm();
+            _ = form.ShowDialog();
+        }
+
+        internal void ShowProduct()
+        {
+
+        }
+
+        internal void ShowRange()
+        {
+
+        }
     }
+
 }

@@ -101,7 +101,8 @@
                     
                     
                     <StackPanel Orientation="Vertical" Margin="5,0,0,0">
-                        <Button Width="48" Height="48">
+                        <Button Width="48" Height="48"
+                                Command="{Binding TodayButton}">
                             <Image Source="/img/today1.ico"/>
                             <Button.ToolTip >
                                 <ToolTip Background="Yellow">
@@ -115,7 +116,8 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
-                        <Button Width="48" Height="48">
+                        <Button Width="48" Height="48"
+                                Command="{Binding ProductButton}">
                             <Image Source="/img/calculator2.png"/>
                             <Button.ToolTip >
                                 <ToolTip Background="Yellow">
@@ -129,7 +131,8 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
-                        <Button Width="48" Height="48">
+                        <Button Width="48" Height="48"
+                                Command="{Binding RangeButton}">
                             <Image Source="/img/calculator1.ico"/>
                             <Button.ToolTip >
                                 <ToolTip Background="Yellow">
@@ -141,7 +144,6 @@
                         </Button>
                         <Label Content="Zakres" Padding="0,2,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" />
                     </StackPanel>
-
 
                 </RibbonGroup>
             </RibbonTab>

@@ -157,14 +157,23 @@
     <Compile Include="Forms\Setting\SettingForm.xaml.cs">
       <DependentUpon>SettingForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Statistic\BindingProxy.cs" />
+    <Compile Include="Forms\Statistic\Command\ProductButton.cs" />
+    <Compile Include="Forms\Statistic\Command\RangeButton.cs" />
+    <Compile Include="Forms\Statistic\Command\TodayButton.cs" />
     <Compile Include="Forms\Statistic\ModelView\StatisticMV.cs" />
+    <Compile Include="Forms\Statistic\ModelView\StatisticTodayMV.cs" />
     <Compile Include="Forms\Statistic\StatisticForm.xaml.cs">
       <DependentUpon>StatisticForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Statistic\StatisticTodayForm.xaml.cs">
+      <DependentUpon>StatisticTodayForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Tools\WindowsOperation.cs" />
     <Compile Include="Repository\ProductRepository.cs" />
     <Compile Include="Repository\QualityDataRepository.cs" />
     <Compile Include="Repository\QualityRepository.cs" />
+    <Compile Include="Repository\StatisticRepository.cs" />
     <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Security\Encrypt.cs" />
     <Compile Include="Security\User.cs" />
@@ -173,6 +182,7 @@
     <Compile Include="Service\ProductService.cs" />
     <Compile Include="Service\QualityDataService.cs" />
     <Compile Include="Service\QualityService.cs" />
+    <Compile Include="Service\StatisticService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Forms\Login\LoginForm.xaml.cs">
@@ -237,6 +247,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\Statistic\StatisticForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Statistic\StatisticTodayForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -321,6 +335,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Img\today1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Forms\Statistic\Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
