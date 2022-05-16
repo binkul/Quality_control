@@ -5,15 +5,24 @@ using System.Linq;
 
 namespace Quality_Control.Service
 {
+    public enum StatisticType
+    {
+        Today,
+        Range,
+        Product
+    }
+
     public class StatisticService
     {
+        private StatisticType _type;
         private readonly StatisticRepository _repository;
         public DataTable GetTodayData { get; }
         public List<string> GetVisibleColumn { get; }
         public bool Modified { get; set; } = false;
 
-        public StatisticService()
+        public StatisticService(StatisticType type)
         {
+            _type = type;
             _repository = new StatisticRepository();
             GetTodayData = _repository.GetStatisticToday();
             GetVisibleColumn = ShowColumnForToday();
@@ -37,5 +46,31 @@ namespace Quality_Control.Service
                 //.Aggregate((x, y) => x + "|" + y);
         }
 
+        public bool SaveToday()
+        {
+            bool result = true;
+
+            if (!Modified)
+                return result;
+
+            DataTable modifiedRows = GetTodayData.GetChanges(DataRowState.Modified);
+
+            foreach (DataRow row in modifiedRows.Rows)
+            {
+                result = _repository.UpdateQualityData(row);
+                if (result)
+                {
+                    row.AcceptChanges();
+                }
+                else
+                {
+                    return result;
+                }
+            }
+
+            Modified = false;
+            return result;
+        }
     }
 }
+

@@ -160,12 +160,17 @@
     <Compile Include="Forms\Statistic\BindingProxy.cs" />
     <Compile Include="Forms\Statistic\Command\ProductButton.cs" />
     <Compile Include="Forms\Statistic\Command\RangeButton.cs" />
+    <Compile Include="Forms\Statistic\Command\RangeSaveButton.cs" />
     <Compile Include="Forms\Statistic\Command\TodayButton.cs" />
     <Compile Include="Forms\Statistic\Command\TodaySaveButton.cs" />
     <Compile Include="Forms\Statistic\ModelView\StatisticMV.cs" />
+    <Compile Include="Forms\Statistic\ModelView\StatisticRangeMV.cs" />
     <Compile Include="Forms\Statistic\ModelView\StatisticTodayMV.cs" />
     <Compile Include="Forms\Statistic\StatisticForm.xaml.cs">
       <DependentUpon>StatisticForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Statistic\StatisticRangeForm.xaml.cs">
+      <DependentUpon>StatisticRangeForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Statistic\StatisticTodayForm.xaml.cs">
       <DependentUpon>StatisticTodayForm.xaml</DependentUpon>
@@ -248,6 +253,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\Statistic\StatisticForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Statistic\StatisticRangeForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

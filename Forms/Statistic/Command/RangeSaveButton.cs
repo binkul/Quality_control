@@ -4,11 +4,11 @@ using System.Windows.Input;
 
 namespace Quality_Control.Forms.Statistic.Command
 {
-    internal class TodaySaveButton : ICommand
+    internal class RangeSaveButton : ICommand
     {
-        private readonly StatisticTodayMV _modelView;
+        private readonly StatisticRangeMV _modelView;
 
-        public TodaySaveButton(StatisticTodayMV modelView)
+        public RangeSaveButton(StatisticRangeMV modelView)
         {
             _modelView = modelView ?? throw new ArgumentNullException("Model widoku jest null");
         }
@@ -32,7 +32,7 @@ namespace Quality_Control.Forms.Statistic.Command
 
         public void Execute(object parameter)
         {
-            _modelView.SaveToday();
+            _modelView.SaveRange();
         }
     }
 }

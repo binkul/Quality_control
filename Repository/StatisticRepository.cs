@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
 using System.Windows;
 
 namespace Quality_Control.Repository
@@ -40,6 +41,61 @@ namespace Quality_Control.Repository
             }
 
             return table;
+        }
+
+        public bool UpdateQualityData(DataRow row)
+        {
+            bool result = true;
+            StringBuilder kwerStart = new StringBuilder("Update LabBook.dbo.QualityControlData Set ");
+            StringBuilder kwerEnd = new StringBuilder(" Where id=@id");
+            SqlConnection connection = new SqlConnection(Application.Current.FindResource("ConnectionString").ToString());
+            SqlCommand cmd = new SqlCommand();
+
+            try
+            {
+                int index = 1;
+                foreach (DataColumn column in row.Table.Columns)
+                {
+                    string field = column.ColumnName;
+                    if (field != "name" && field != "number" && field != "id" && field != "active_fields" && field != "labbook_id")
+                    {
+                        kwerStart.Append(field);
+                        kwerStart.Append("=");
+                        kwerStart.Append("@a");
+                        kwerStart.Append(index.ToString());
+                        kwerStart.Append(", ");
+
+                        cmd.Parameters.AddWithValue("@a" + index.ToString(), row[field]);
+                        index++;
+                    }
+                }
+
+                kwerStart.Remove(kwerStart.Length - 2, 2);
+                cmd.CommandText = kwerStart.ToString() + kwerEnd.ToString();
+                cmd.Parameters.AddWithValue("@id", row["id"]);
+                cmd.Connection = connection;
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony, błąd w nazwie serwera lub dostępie do bazy: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                    "Błąd połaczenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show("Problem z połączeniem z serwerem. Prawdopodobnie serwer jest wyłączony: '" + ex.Message + "'. Błąd z poziomu CreateTable VisRepository.",
+                    "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+            return result;
         }
 
     }

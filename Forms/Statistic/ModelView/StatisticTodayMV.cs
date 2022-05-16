@@ -9,9 +9,9 @@ namespace Quality_Control.Forms.Statistic.ModelView
 {
     internal class StatisticTodayMV : INotifyPropertyChanged
     {
-        private ICommand _saveButton;
+        private ICommand _saveTodayButton;
 
-        private readonly StatisticService _service = new StatisticService();
+        private readonly StatisticService _service = new StatisticService(StatisticType.Today);
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(params string[] names)
@@ -31,18 +31,18 @@ namespace Quality_Control.Forms.Statistic.ModelView
 
         public List<string> GetActiveFields => _service.GetVisibleColumn;
 
-        public ICommand SaveButton
+        public ICommand TodaySaveButton
         {
             get
             {
-                if (_saveButton == null) _saveButton = new TodaySaveButton(this);
-                return _saveButton;
+                if (_saveTodayButton == null) _saveTodayButton = new TodaySaveButton(this);
+                return _saveTodayButton;
             }
         }
 
-        internal void Save()
+        internal void SaveToday()
         {
-
+            _ = _service.SaveToday();
         }
     }
 }

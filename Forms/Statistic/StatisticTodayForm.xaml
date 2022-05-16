@@ -56,11 +56,11 @@
     </Window.Resources>
     <DockPanel>
         <Ribbon DockPanel.Dock="Top" FontWeight="Bold" FontSize="14">
-            <RibbonTab Header="Obliczenia statystyczne">
+            <RibbonTab Header="Operacje">
                 <RibbonGroup Header="Statystyka" FontSize="10">
                     <StackPanel Orientation="Vertical" Margin="5,0,0,0">
                         <Button Width="48" Height="48"
-                                Command="{Binding SaveButton}">
+                                Command="{Binding TodaySaveButton}">
                             <Image Source="/img/save.png"/>
                             <Button.ToolTip >
                                 <ToolTip Background="Yellow">
@@ -80,7 +80,7 @@
         <!--#### Measure DataGrid -->
         <DataGrid x:Name="DgQualityData" Grid.Column="2" Grid.Row="1" Margin="2,2,5,2" AutoGenerateColumns="False" FrozenColumnCount="4" HorizontalScrollBarVisibility="Auto"
                       ColumnWidth="*" SelectionMode="Single" SelectionUnit="FullRow"  IsSynchronizedWithCurrentItem="True" RowHeaderWidth="20"
-                      CanUserAddRows="True" CanUserDeleteRows="True" CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column"
+                      CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" CanUserResizeRows="False" FontSize="12" HeadersVisibility="Column"
                       HorizontalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       VerticalGridLinesBrush="{StaticResource DataGridBorderColor}"
                       IsEnabled="{Binding IsAnyQuality, Mode=OneWay}"
@@ -96,7 +96,7 @@
                                         HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
                                         ElementStyle="{StaticResource AllignCellCenter}" />
                 <!-- name-->
-                <DataGridTextColumn Header="Wyrób" Width="200" CanUserSort="False" IsReadOnly="True"
+                <DataGridTextColumn Header="Wyrób" Width="230" CanUserSort="False" IsReadOnly="True"
                                         Binding="{Binding name, Mode=OneWay}"
                                         HeaderStyle="{StaticResource AllignColmnHeaderCenter}"
                                         ElementStyle="{StaticResource AllignCellLeft}" />
