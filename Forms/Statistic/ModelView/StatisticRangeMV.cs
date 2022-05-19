@@ -1,6 +1,7 @@
 ﻿using Quality_Control.Forms.Statistic.Command;
 using Quality_Control.Service;
 using System.ComponentModel;
+using System.Data;
 using System.Windows.Input;
 
 namespace Quality_Control.Forms.Statistic.ModelView
@@ -8,7 +9,8 @@ namespace Quality_Control.Forms.Statistic.ModelView
     internal class StatisticRangeMV : INotifyPropertyChanged
     {
         private ICommand _saveRangeButton;
-        private readonly StatisticService _service = new StatisticService(StatisticType.Range);
+
+        public StatisticService Service;
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(params string[] names)
@@ -20,7 +22,11 @@ namespace Quality_Control.Forms.Statistic.ModelView
             }
         }
 
-        internal bool Modified => _service.Modified;
+        internal bool Modified => Service != null && Service.Modified;
+
+        public DataTable RangeData => Service?.Statistic;
+
+        public bool IsAnyQuality => Service != null && RangeData.Rows.Count > 0;
 
         public ICommand RangeSaveButton
         {

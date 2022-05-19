@@ -27,7 +27,7 @@ namespace Quality_Control.Forms.Statistic.Command
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            return _modelView.RangeDateEnable;
         }
 
         public void Execute(object parameter)

@@ -1,5 +1,7 @@
 ﻿using Quality_Control.Forms.Statistic.Command;
+using Quality_Control.Forms.Statistic.Model;
 using Quality_Control.Service;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,9 +11,11 @@ namespace Quality_Control.Forms.Statistic.ModelView
 {
     internal class StatisticTodayMV : INotifyPropertyChanged
     {
-        private ICommand _saveTodayButton;
+        private static readonly StatisticDto statisticDto = new StatisticDto("Statystyka na dziś: " + DateTime.Today.ToShortDateString(),
+                DateTime.Now, DateTime.Now, StatisticType.Today);
 
-        private readonly StatisticService _service = new StatisticService(StatisticType.Today);
+        private ICommand _saveTodayButton;
+        private readonly StatisticService _service = new StatisticService(statisticDto);
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(params string[] names)
@@ -23,7 +27,7 @@ namespace Quality_Control.Forms.Statistic.ModelView
             }
         }
 
-        public DataTable TodayData => _service.GetTodayData;
+        public DataTable TodayData => _service.Statistic;
 
         public bool IsAnyQuality => TodayData.Rows.Count > 0;
 

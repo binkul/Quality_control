@@ -1,4 +1,5 @@
-﻿using Quality_Control.Repository;
+﻿using Quality_Control.Forms.Statistic.Model;
+using Quality_Control.Repository;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -16,34 +17,47 @@ namespace Quality_Control.Service
     {
         private StatisticType _type;
         private readonly StatisticRepository _repository;
-        public DataTable GetTodayData { get; }
+        public DataTable Statistic { get; }
         public List<string> GetVisibleColumn { get; }
         public bool Modified { get; set; } = false;
 
-        public StatisticService(StatisticType type)
+        public StatisticService(StatisticDto statisticDto)
         {
-            _type = type;
+            _type = statisticDto.Type;
             _repository = new StatisticRepository();
-            GetTodayData = _repository.GetStatisticToday();
-            GetVisibleColumn = ShowColumnForToday();
-            GetTodayData.ColumnChanged += GetTodayData_ColumnChanged;
+            Statistic = GetStatistic(statisticDto.Type);
+            GetVisibleColumn = ColumnVisibility(statisticDto.Type);
+            Statistic.ColumnChanged += GetStatisticData_ColumnChanged;
         }
 
-        private void GetTodayData_ColumnChanged(object sender, DataColumnChangeEventArgs e)
+        private void GetStatisticData_ColumnChanged(object sender, DataColumnChangeEventArgs e)
         {
             Modified = true;
         }
 
-        private List<string> ShowColumnForToday()
+        private DataTable GetStatistic(StatisticType type)
         {
-            return GetTodayData
-                .AsEnumerable()
-                .Select(row => row.Field<string>("active_fields"))
-                .Select(field => field.Split('|'))
-                .SelectMany(x => x)
-                .Distinct()
-                .ToList();
-                //.Aggregate((x, y) => x + "|" + y);
+            switch (type)
+            {
+                case StatisticType.Product:
+                    return null;
+                case StatisticType.Range:
+                    return _repository.GetStatisticRange();
+                default:
+                    return _repository.GetStatisticToday();
+            }
+        }
+
+        private List<string> ColumnVisibility(StatisticType type)
+        {
+            return Statistic
+                    .AsEnumerable()
+                    .Select(row => row.Field<string>("active_fields"))
+                    .Select(field => field.Split('|'))
+                    .SelectMany(x => x)
+                    .Distinct()
+                    .ToList();
+            //.Aggregate((x, y) => x + "|" + y);
         }
 
         public bool SaveToday()
@@ -53,7 +67,7 @@ namespace Quality_Control.Service
             if (!Modified)
                 return result;
 
-            DataTable modifiedRows = GetTodayData.GetChanges(DataRowState.Modified);
+            DataTable modifiedRows = Statistic.GetChanges(DataRowState.Modified);
 
             foreach (DataRow row in modifiedRows.Rows)
             {

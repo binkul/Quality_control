@@ -2,6 +2,7 @@
 using Quality_Control.Forms.AddNew.Model;
 using Quality_Control.Forms.Navigation;
 using Quality_Control.Forms.Statistic.Command;
+using Quality_Control.Forms.Statistic.Model;
 using Quality_Control.Service;
 using System;
 using System.Collections.Generic;
@@ -56,6 +57,8 @@ namespace Quality_Control.Forms.Statistic.ModelView
         public List<ProductModel> Products => _service.FilteredProducts;
 
         public Thickness TxtIndexLeftPosition => new Thickness(_startLeftPosition, 0, 0, 5);
+
+        public bool RangeDateEnable => DateEnd >= DateStart;
 
         #region Navigation
 
@@ -145,12 +148,16 @@ namespace Quality_Control.Forms.Statistic.ModelView
 
         internal void ShowProduct()
         {
-
         }
 
         internal void ShowRange()
         {
+            string dateStart = DateStart.ToShortDateString();
+            string dateEnd = DateEnd.ToShortDateString();
+            StatisticDto range = new StatisticDto("Wyniki dla zakresu: " + dateStart + " do " + dateEnd, DateStart, DateEnd, StatisticType.Range);
 
+            StatisticRangeForm form = new StatisticRangeForm(range);
+            _ = form.ShowDialog();
         }
     }
 

@@ -7,7 +7,7 @@
         xmlns:Convertors="clr-namespace:Quality_Control.Converters"
         xmlns:vm="clr-namespace:Quality_Control.Forms.Statistic.ModelView"
         mc:Ignorable="d"
-        Title="Statystyka dla zakresu" Height="450" Width="800">
+        Title="Statystyka dla zakresu" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <vm:StatisticRangeMV />
     </Window.DataContext>
@@ -78,5 +78,18 @@
             </RibbonTab>
         </Ribbon>
 
+        <Grid Background="#FFE5E5E5" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
+            <!-- label with title -->
+            <Label Grid.Row="0" x:Name="LblTitle" Content="Zakres" FontSize="14" FontWeight="Bold" Foreground="Blue" Margin="10,0,0,0" />
+            
+            <!-- main datagrid -->
+            
+            
+        </Grid>
     </DockPanel>
 </RibbonWindow>

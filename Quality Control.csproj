@@ -166,6 +166,7 @@
     <Compile Include="Forms\Statistic\ModelView\StatisticMV.cs" />
     <Compile Include="Forms\Statistic\ModelView\StatisticRangeMV.cs" />
     <Compile Include="Forms\Statistic\ModelView\StatisticTodayMV.cs" />
+    <Compile Include="Forms\Statistic\Model\StatisticDto.cs" />
     <Compile Include="Forms\Statistic\StatisticForm.xaml.cs">
       <DependentUpon>StatisticForm.xaml</DependentUpon>
     </Compile>
@@ -346,8 +347,6 @@
   <ItemGroup>
     <Resource Include="Img\today1.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Forms\Statistic\Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
